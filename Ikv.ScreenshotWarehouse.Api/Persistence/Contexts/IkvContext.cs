@@ -1,7 +1,7 @@
-﻿using Ikv.ScreenshotWarehouse.Api.Persistent.Entities;
+﻿using Ikv.ScreenshotWarehouse.Api.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Ikv.ScreenshotWarehouse.Api.Persistent.Contexts
+namespace Ikv.ScreenshotWarehouse.Api.Persistence.Contexts
 {
     public class IkvContext : DbContext
     {

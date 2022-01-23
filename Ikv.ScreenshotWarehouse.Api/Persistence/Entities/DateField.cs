@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ikv.ScreenshotWarehouse.Api.Persistent.Entities
+namespace Ikv.ScreenshotWarehouse.Api.Persistence.Entities
 {
     public class DateField
     {

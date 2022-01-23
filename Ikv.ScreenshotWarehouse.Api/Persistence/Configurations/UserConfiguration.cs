@@ -1,8 +1,8 @@
-﻿using Ikv.ScreenshotWarehouse.Api.Persistent.Entities;
+﻿using Ikv.ScreenshotWarehouse.Api.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Ikv.ScreenshotWarehouse.Api.Persistent.Configurations
+namespace Ikv.ScreenshotWarehouse.Api.Persistence.Configurations
 {
     public class UserConfiguration : IEntityTypeConfiguration<User>
     {

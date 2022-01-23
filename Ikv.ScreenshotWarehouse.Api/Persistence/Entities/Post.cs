@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Ikv.ScreenshotWarehouse.Api.Persistent.Entities
+namespace Ikv.ScreenshotWarehouse.Api.Persistence.Entities
 {
     public class Post : DateField
     {
