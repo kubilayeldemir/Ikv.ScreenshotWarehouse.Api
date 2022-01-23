@@ -14,5 +14,10 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistent.Entities
 
         public string Role { get; set; }
         public ICollection<Post> Posts { get; set; }
+        
+        public bool CheckIfUserCredentialsCorrect(string username, string password)
+        {
+            return Username == username && Password == password;
+        }
     }
 }
