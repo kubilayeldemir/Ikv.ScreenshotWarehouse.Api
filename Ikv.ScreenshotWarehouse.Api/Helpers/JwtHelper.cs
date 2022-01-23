@@ -2,7 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Ikv.ScreenshotWarehouse.Api.Persistent.Entities;
+using Ikv.ScreenshotWarehouse.Api.Persistence.Entities;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Ikv.ScreenshotWarehouse.Api.Helpers

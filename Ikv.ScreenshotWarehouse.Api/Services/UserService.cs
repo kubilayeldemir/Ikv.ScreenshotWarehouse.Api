@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Ikv.ScreenshotWarehouse.Api.Helpers;
-using Ikv.ScreenshotWarehouse.Api.Persistent.Entities;
+using Ikv.ScreenshotWarehouse.Api.Persistence.Entities;
 using Ikv.ScreenshotWarehouse.Api.Repositories;
 using Ikv.ScreenshotWarehouse.Api.V1.Models.RequestModels;
 

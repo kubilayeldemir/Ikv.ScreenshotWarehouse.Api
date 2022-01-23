@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Ikv.ScreenshotWarehouse.Api.Persistent.Contexts;
-using Ikv.ScreenshotWarehouse.Api.Persistent.Entities;
+using Ikv.ScreenshotWarehouse.Api.Persistence.Contexts;
+using Ikv.ScreenshotWarehouse.Api.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ikv.ScreenshotWarehouse.Api.Repositories

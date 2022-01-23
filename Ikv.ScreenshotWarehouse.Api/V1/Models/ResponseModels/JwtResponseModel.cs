@@ -1,4 +1,4 @@
-﻿using Ikv.ScreenshotWarehouse.Api.Persistent.Entities;
+﻿using Ikv.ScreenshotWarehouse.Api.Persistence.Entities;
 
 namespace Ikv.ScreenshotWarehouse.Api.V1.Models.ResponseModels
 {
