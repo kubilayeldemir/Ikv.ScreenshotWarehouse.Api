@@ -1,5 +1,8 @@
+using System;
+using Ikv.ScreenshotWarehouse.Api.Persistent.Contexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,6 +12,8 @@ namespace Ikv.ScreenshotWarehouse.Api
 {
     public class Startup
     {
+        private static readonly string DbConnString = Environment.GetEnvironmentVariable("IKVDBCONNSTRING");
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -24,6 +29,7 @@ namespace Ikv.ScreenshotWarehouse.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Ikv.ScreenshotWarehouse.Api", Version = "v1"});
             });
+            services.AddDbContext<IkvContext>(options => options.UseNpgsql(DbConnString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
