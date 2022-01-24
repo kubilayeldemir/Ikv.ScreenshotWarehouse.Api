@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using Ikv.ScreenshotWarehouse.Api.Helpers;
 using Ikv.ScreenshotWarehouse.Api.Persistence.Contexts;
 using Ikv.ScreenshotWarehouse.Api.Repositories;
 using Ikv.ScreenshotWarehouse.Api.Services;
@@ -30,11 +31,14 @@ namespace Ikv.ScreenshotWarehouse.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddRouting(opt => opt.LowercaseUrls = true);
             services.AddControllers();
             
             services.AddDbContext<IkvContext>(options => options.UseNpgsql(DbConnString));
+            
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
+            services.AddSingleton<CloudinaryHelper>();
             
             services.AddAuthentication(x =>
                 {
