@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Text.Json.Serialization;
 using Ikv.ScreenshotWarehouse.Api.Helpers;
 using Ikv.ScreenshotWarehouse.Api.Persistence.Contexts;
 using Ikv.ScreenshotWarehouse.Api.Repositories;
@@ -32,14 +33,17 @@ namespace Ikv.ScreenshotWarehouse.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRouting(opt => opt.LowercaseUrls = true);
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
             
             services.AddDbContext<IkvContext>(options => options.UseNpgsql(DbConnString));
-            
+
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IPostService, PostService>();
             services.AddSingleton<CloudinaryHelper>();
-            
+
             services.AddAuthentication(x =>
                 {
                     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -57,7 +61,7 @@ namespace Ikv.ScreenshotWarehouse.Api
                         ValidateAudience = false
                     };
                 });
-            
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Ikv.ScreenshotWarehouse.Api", Version = "v1"});

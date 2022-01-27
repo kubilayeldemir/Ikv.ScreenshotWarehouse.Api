@@ -19,6 +19,9 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistence.Configurations
 
             builder.Property(p => p.GameMap)
                 .HasMaxLength(64);
+            
+            builder.Property(p => p.FileURL)
+                .HasMaxLength(2048);
         }
     }
 }
