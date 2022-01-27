@@ -9,10 +9,10 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistence.Entities
         public string Id { get; set; }
         public string Category { get; set; }
         public string Title { get; set; }
+        public string FileURL { get; set; }
         public DateTime ScreenshotDate { get; set; }
         public string GameMap { get; set; }
         public User User { get; set; }
         public long UserId { get; set; }
-        
     }
 }
