@@ -23,6 +23,11 @@ namespace Ikv.ScreenshotWarehouse.Api.Helpers
 
         public async Task<string> UploadBase64Image(string base64, string folderName)
         {
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            if (env != null && env == "Development")
+            {
+                folderName = "development-" + folderName;
+            }
             var imgUploadParams = new ImageUploadParams()
             {
                 File = new FileDescription(base64),

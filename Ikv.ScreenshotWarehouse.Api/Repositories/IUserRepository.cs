@@ -7,5 +7,6 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
     {
         Task<User> GetUserByUsername(string username);
         Task<User> SaveUser(User user);
+        Task<string> GetUsernameOfUserFromUserId(long userId);
     }
 }

@@ -18,7 +18,7 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Models.ResponseModels
         public PostResponseModel(Post post)
         {
             Id = post.Id;
-            Username = post.User.Username;
+            Username = post.Username;
             UserId = post.UserId;
             Category = post.Category;
             Title = post.Title;
