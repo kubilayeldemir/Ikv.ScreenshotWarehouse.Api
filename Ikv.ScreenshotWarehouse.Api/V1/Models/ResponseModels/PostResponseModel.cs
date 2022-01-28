@@ -1,0 +1,31 @@
+﻿using System;
+using Ikv.ScreenshotWarehouse.Api.Persistence.Entities;
+
+namespace Ikv.ScreenshotWarehouse.Api.V1.Models.ResponseModels
+{
+    public class PostResponseModel
+    {
+        public string Id { get; set; }
+        public string Username { get; set; }
+        public long UserId { get; set; }
+        public string Category { get; set; }
+        public string Title { get; set; }
+        public string FileUrl { get; set; }
+        public DateTime ScreenshotDate { get; set; }
+        public string GameMap { get; set; }
+        public bool IsValidated { get; set; }
+
+        public PostResponseModel(Post post)
+        {
+            Id = post.Id;
+            Username = post.User.Username;
+            UserId = post.UserId;
+            Category = post.Category;
+            Title = post.Title;
+            FileUrl = post.FileURL;
+            ScreenshotDate = post.ScreenshotDate;
+            GameMap = post.GameMap;
+            IsValidated = post.IsValidated;
+        }
+    }
+}
