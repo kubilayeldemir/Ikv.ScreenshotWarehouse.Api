@@ -33,8 +33,7 @@ namespace Ikv.ScreenshotWarehouse.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRouting(opt => opt.LowercaseUrls = true);
-            services.AddControllers().AddJsonOptions(options =>
-                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+            services.AddControllers();
             
             services.AddDbContext<IkvContext>(options => options.UseNpgsql(DbConnString));
 

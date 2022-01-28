@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using CSharpVitamins;
 using Ikv.ScreenshotWarehouse.Api.Helpers;
 using Ikv.ScreenshotWarehouse.Api.Persistence.Entities;
 using Ikv.ScreenshotWarehouse.Api.Repositories;
@@ -30,12 +31,13 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 Category = model.Category,
                 Title = model.Title,
                 GameMap = model.GameMap,
-                UserId = userId
+                UserId = userId,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
             };
-            post.CreatedAt = DateTime.Now;
-            post.UpdatedAt = DateTime.Now;
-            post.Id = DateTime.Now.ToString(); //TODO use short uuid
-            post.FileURL = "NOT IMPLEMENTED YET";
+            post.Id = ShortGuid.NewGuid();
+            var url = await _cloudinaryHelper.UploadBase64Image(model.FileBase64, userId.ToString());
+            post.FileURL = url;
             return await _postRepository.SavePost(post);
         }
     }
