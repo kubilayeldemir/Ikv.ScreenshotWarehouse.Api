@@ -12,11 +12,14 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
     {
         private readonly IPostRepository _postRepository;
         private readonly CloudinaryHelper _cloudinaryHelper;
+        private readonly IUserRepository _userRepository;
 
-        public PostService(IPostRepository postRepository, CloudinaryHelper cloudinaryHelper)
+
+        public PostService(IPostRepository postRepository, CloudinaryHelper cloudinaryHelper, IUserRepository userRepository)
         {
             _postRepository = postRepository;
             _cloudinaryHelper = cloudinaryHelper;
+            _userRepository = userRepository;
         }
 
         public async Task<Post> GetPostById(string postId)
@@ -38,7 +41,49 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             post.Id = ShortGuid.NewGuid();
             var url = await _cloudinaryHelper.UploadBase64Image(model.FileBase64, userId.ToString());
             post.FileURL = url;
+            post.ScreenshotDate = ParseScreenshotDateFromFileName(model.FileName);
+            post.Username = await _userRepository.GetUsernameOfUserFromUserId(userId);
             return await _postRepository.SavePost(post);
+        }
+
+        private static DateTime ParseScreenshotDateFromFileName(string fileName)
+        {
+            var originalFileName = fileName;
+            //Example file name with date:  EKRAN_01-15-22_00.40.28.JPG -> real date -> 15.01.2022 00:40
+            //Structure: Month-Day-Year's last 2 digit-Hour-Minute-Second
+            try
+            {
+                if (fileName.EndsWith(".JPG") || fileName.EndsWith(".BMP") || fileName.EndsWith("JPEG"))
+                {
+                    fileName = fileName[..fileName.LastIndexOf('.')];
+                }
+                
+                fileName = fileName[6..]; //Remove useless part: "EKRAN_"
+
+                var fileNamesDateAndHourSplitted = fileName.Split('_');
+                var datePart = fileNamesDateAndHourSplitted[0];
+                var timePart = fileNamesDateAndHourSplitted[1];
+
+                var datePartSplit = datePart.Split('-');
+                var timePartSplit = timePart.Split('.');
+
+                var dateTime = new DateTime();
+
+                dateTime = dateTime.AddYears(1999 + int.Parse(datePartSplit[2]));
+                dateTime = dateTime.AddMonths(int.Parse(datePartSplit[0]) - 1);
+                dateTime = dateTime.AddDays(int.Parse(datePartSplit[1]) - 1);
+
+                dateTime = dateTime.AddHours(int.Parse(timePartSplit[0]));
+                dateTime = dateTime.AddMinutes(int.Parse(timePartSplit[1]));
+                dateTime = dateTime.AddSeconds(int.Parse(timePartSplit[2]));
+
+                return dateTime;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Can't parse dateTime of file" + originalFileName);
+                return DateTime.Now;
+            }
         }
     }
 }

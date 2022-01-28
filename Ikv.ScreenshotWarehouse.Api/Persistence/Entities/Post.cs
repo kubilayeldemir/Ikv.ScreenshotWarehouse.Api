@@ -14,6 +14,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistence.Entities
         public string GameMap { get; set; }
         public bool IsValidated { get; set; }
         public User User { get; set; }
+        public string Username { get; set; }
         public long UserId { get; set; }
     }
 }

@@ -22,6 +22,9 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistence.Configurations
             
             builder.Property(p => p.FileURL)
                 .HasMaxLength(2048);
+
+            builder.Property(p => p.Username)
+                .HasMaxLength(64);
         }
     }
 }

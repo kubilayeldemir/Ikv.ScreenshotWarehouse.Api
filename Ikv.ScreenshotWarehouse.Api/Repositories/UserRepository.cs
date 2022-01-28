@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Ikv.ScreenshotWarehouse.Api.Persistence.Contexts;
 using Ikv.ScreenshotWarehouse.Api.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,12 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
             await _ikvContext.Users.AddAsync(user);
             await _ikvContext.SaveChangesAsync();
             return user;
+        }
+
+        public async Task<string> GetUsernameOfUserFromUserId(long userId)
+        {
+            return await _ikvContext.Users.Where(q => q.Id == userId)
+                .Select(q => q.Username).FirstOrDefaultAsync();
         }
     }
 }
