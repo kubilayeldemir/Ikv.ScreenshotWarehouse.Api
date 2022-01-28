@@ -26,6 +26,15 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
             return Ok(postResponseModel);
         }
 
+        [HttpGet("all")]
+        public async Task<IActionResult> SearchPosts([FromQuery] PostSearchRequestModel model)
+        {
+            var post = await _postService.SearchPosts(model);
+            
+            var postResponseModel = post.ConvertAll(p => new PostResponseModel(p));
+            return Ok(postResponseModel);
+        }
+
         [HttpPost]
         public async Task<IActionResult> SavePost([FromBody] PostCreateRequestModel model)
         {
