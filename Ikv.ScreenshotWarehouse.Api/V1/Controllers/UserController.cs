@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Ikv.ScreenshotWarehouse.Api.Helpers;
 using Ikv.ScreenshotWarehouse.Api.Services;
 using Ikv.ScreenshotWarehouse.Api.V1.Models.RequestModels;
 using Ikv.ScreenshotWarehouse.Api.V1.Models.ResponseModels;
@@ -12,12 +11,10 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly CloudinaryHelper _cloudinaryHelper;
         
-        public UserController(IUserService userService, CloudinaryHelper cloudinaryHelper)
+        public UserController(IUserService userService)
         {
             _userService = userService;
-            _cloudinaryHelper = cloudinaryHelper;
         }
         
         [HttpPost("login")]
@@ -45,13 +42,6 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
                 });
             }
             return Ok(new UserResponseModel(user.Username, user.Email, user.Role));
-        }
-        
-        [HttpPost("test")]
-        public async Task<IActionResult> Test([FromBody] string base64)
-        {
-            var url = await _cloudinaryHelper.UploadBase64Image(base64,"test");
-            return Ok(url);
         }
     }
 }
