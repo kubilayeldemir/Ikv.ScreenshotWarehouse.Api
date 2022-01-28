@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CSharpVitamins;
 using Ikv.ScreenshotWarehouse.Api.Helpers;
@@ -44,6 +45,11 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             post.ScreenshotDate = ParseScreenshotDateFromFileName(model.FileName);
             post.Username = await _userRepository.GetUsernameOfUserFromUserId(userId);
             return await _postRepository.SavePost(post);
+        }
+
+        public async Task<List<Post>> SearchPosts(PostSearchRequestModel model)
+        {
+            return await _postRepository.SearchPosts(model);
         }
 
         private static DateTime ParseScreenshotDateFromFileName(string fileName)
