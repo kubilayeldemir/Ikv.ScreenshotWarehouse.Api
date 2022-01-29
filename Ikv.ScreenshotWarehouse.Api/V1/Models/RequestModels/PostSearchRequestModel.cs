@@ -11,5 +11,7 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Models.RequestModels
         public string Title { get; set; }
         public string GameMap { get; set; }
         public bool IsValidated { get; set; }
+        public string SortField { get; set; }
+        public string SortDirection { get; set; }
     }
 }
