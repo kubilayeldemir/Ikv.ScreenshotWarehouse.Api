@@ -1,9 +1,22 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine AS base
 WORKDIR /app
 EXPOSE 80
-EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+ARG CloudinaryApiKey
+ARG CloudinaryApiSecret
+ARG CloudinaryCloudName
+ARG ECOMMERCE_JWT_SECRET
+ARG IKVDBCONNSTRING
+
+ENV CloudinaryApiKey=$CloudinaryApiKey
+ENV CloudinaryApiSecret=$CloudinaryApiSecret
+ENV CloudinaryCloudName=$CloudinaryCloudName
+ENV ECOMMERCE_JWT_SECRET=$ECOMMERCE_JWT_SECRET
+ENV IKVDBCONNSTRING=$IKVDBCONNSTRING
+
+FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine AS build
 WORKDIR /src
 COPY ["Ikv.ScreenshotWarehouse.Api/Ikv.ScreenshotWarehouse.Api.csproj", "Ikv.ScreenshotWarehouse.Api/"]
 RUN dotnet restore "Ikv.ScreenshotWarehouse.Api/Ikv.ScreenshotWarehouse.Api.csproj"
