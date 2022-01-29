@@ -1,10 +1,11 @@
-version: "3.3"
+version: "3.4"
 services:
   ss-warehouse-api:
     build:
       network: host
       context: .
       dockerfile: Ikv.ScreenshotWarehouse.Api/Dockerfile
+    network_mode: "host"
     environment:
       CloudinaryApiKey: ${CloudinaryApiKey}
       CloudinaryApiSecret: ${CloudinaryApiSecret}
