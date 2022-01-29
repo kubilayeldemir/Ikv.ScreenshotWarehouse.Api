@@ -1,0 +1,14 @@
+version: "3.3"
+services:
+  ss-warehouse-api:
+    build:
+      context: .
+      dockerfile: Ikv.ScreenshotWarehouse.Api/Dockerfile
+    environment:
+      CloudinaryApiKey: ${CloudinaryApiKey}
+      CloudinaryApiSecret: ${CloudinaryApiSecret}
+      CloudinaryCloudName: ${CloudinaryCloudName}
+      IKV_JWT_SECRET: ${IKV_JWT_SECRET}
+      IKVDBCONNSTRING: ${IKVDBCONNSTRING}
+    ports:
+      - "80:80"

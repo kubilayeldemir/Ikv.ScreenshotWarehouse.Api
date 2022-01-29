@@ -4,7 +4,19 @@ Backend for a fan made screenshot warehouse of a legendary turkish mmorpg game
 
 #HOW TO RUN
 
-Docker command for Dockerfile V1
+Set required env variables on your machine for docker-compose.
+
+For Dockerfile you need to pass variables as arguments.
+##Docker Compose
+
+cd .\Ikv.ScreenshotWarehouse.Api\
+
+docker-compose up -d
+
+docker-compose down
+
+docker-compose start|stop
+##Docker commands for Dockerfile V1
 
 - cd .\Ikv.ScreenshotWarehouse.Api\
 
@@ -12,12 +24,12 @@ Docker command for Dockerfile V1
 --build-arg CloudinaryApiKey= \
 --build-arg CloudinaryApiSecret= \
 --build-arg CloudinaryCloudName= \
---build-arg ECOMMERCE_JWT_SECRET= \
+--build-arg IKV_JWT_SECRET= \
 --build-arg IKVDBCONNSTRING='' .
 
 Use one line in windows...
 
-- docker build -f .\Ikv.ScreenshotWarehouse.Api\Dockerfile -t ikv --build-arg CloudinaryApiKey= --build-arg CloudinaryApiSecret= --build-arg CloudinaryCloudName= --build-arg ECOMMERCE_JWT_SECRET= --build-arg IKVDBCONNSTRING='' .
+- docker build -f .\Ikv.ScreenshotWarehouse.Api\Dockerfile -t ikv --build-arg CloudinaryApiKey= --build-arg CloudinaryApiSecret= --build-arg CloudinaryCloudName= --build-arg IKV_JWT_SECRET= --build-arg IKVDBCONNSTRING='' .
 
 
 - docker run -it -p 80:80 --rm ikv

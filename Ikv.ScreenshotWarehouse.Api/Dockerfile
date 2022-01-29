@@ -7,13 +7,13 @@ EXPOSE 80
 ARG CloudinaryApiKey
 ARG CloudinaryApiSecret
 ARG CloudinaryCloudName
-ARG ECOMMERCE_JWT_SECRET
+ARG IKV_JWT_SECRET
 ARG IKVDBCONNSTRING
 
 ENV CloudinaryApiKey=$CloudinaryApiKey
 ENV CloudinaryApiSecret=$CloudinaryApiSecret
 ENV CloudinaryCloudName=$CloudinaryCloudName
-ENV ECOMMERCE_JWT_SECRET=$ECOMMERCE_JWT_SECRET
+ENV IKV_JWT_SECRET=$IKV_JWT_SECRET
 ENV IKVDBCONNSTRING=$IKVDBCONNSTRING
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine AS build

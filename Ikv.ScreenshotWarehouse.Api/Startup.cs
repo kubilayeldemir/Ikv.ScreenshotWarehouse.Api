@@ -18,7 +18,7 @@ namespace Ikv.ScreenshotWarehouse.Api
 {
     public class Startup
     {
-        public static readonly string JwtSecretKey = Environment.GetEnvironmentVariable("ECOMMERCE_JWT_SECRET");
+        public static readonly string JwtSecretKey = Environment.GetEnvironmentVariable("IKV_JWT_SECRET");
         private static readonly string DbConnString = Environment.GetEnvironmentVariable("IKVDBCONNSTRING");
 
         public Startup(IConfiguration configuration)
