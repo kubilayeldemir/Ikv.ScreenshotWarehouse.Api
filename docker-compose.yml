@@ -2,6 +2,7 @@ version: "3.3"
 services:
   ss-warehouse-api:
     build:
+      network: host
       context: .
       dockerfile: Ikv.ScreenshotWarehouse.Api/Dockerfile
     environment:
