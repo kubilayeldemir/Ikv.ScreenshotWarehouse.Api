@@ -34,6 +34,22 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
             var postResponseModel = post.ConvertAll(p => new PostResponseModel(p));
             return Ok(postResponseModel);
         }
+        
+        [HttpGet("paged")]
+        public async Task<IActionResult> SearchPostsPaged([FromQuery] PostSearchRequestModel model, [FromQuery] PagingRequestModel pagingModel)
+        {
+            var postsPaged = await _postService.SearchPostsPaged(model, pagingModel);
+
+            var pagedResponseModel = new PagedResult<PostResponseModel>
+            {
+                CurrentPage = postsPaged.CurrentPage,
+                PageCount = postsPaged.PageCount,
+                PageSize = postsPaged.PageSize
+            };
+            
+            pagedResponseModel.Data = postsPaged.Data.ConvertAll(p => new PostResponseModel(p));
+            return Ok(pagedResponseModel);
+        }
 
         [HttpPost]
         public async Task<IActionResult> SavePost([FromBody] PostCreateRequestModel model)

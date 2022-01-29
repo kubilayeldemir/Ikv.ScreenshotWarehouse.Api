@@ -6,6 +6,7 @@ using Ikv.ScreenshotWarehouse.Api.Helpers;
 using Ikv.ScreenshotWarehouse.Api.Persistence.Entities;
 using Ikv.ScreenshotWarehouse.Api.Repositories;
 using Ikv.ScreenshotWarehouse.Api.V1.Models.RequestModels;
+using Ikv.ScreenshotWarehouse.Api.V1.Models.ResponseModels;
 
 namespace Ikv.ScreenshotWarehouse.Api.Services
 {
@@ -50,6 +51,11 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
         public async Task<List<Post>> SearchPosts(PostSearchRequestModel model)
         {
             return await _postRepository.SearchPosts(model);
+        }
+        
+        public async Task<PagedResult<Post>> SearchPostsPaged(PostSearchRequestModel model, PagingRequestModel pagingModel )
+        {
+            return await _postRepository.SearchPostsPaged(model, pagingModel);
         }
 
         private static DateTime ParseScreenshotDateFromFileName(string fileName)
