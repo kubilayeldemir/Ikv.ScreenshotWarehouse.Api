@@ -5,6 +5,7 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Models.RequestModels
     public class PostSearchRequestModel
     {
         public string Username { get; set; }
+        public long UserId { get; set; }
         public DateTime StarDate { get; set; }
         public DateTime EndDate { get; set; }
         public string Category { get; set; }

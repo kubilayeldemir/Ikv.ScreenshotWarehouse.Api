@@ -47,12 +47,12 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
             query = PostSortQuery(model, query);
             return await query.ToListAsync();
         }
-        
+
         public async Task<PagedResult<Post>> SearchPostsPaged(PostSearchRequestModel model, PagingRequestModel pagingModel)
         {
             var query = PostSearchQuery(model);
             query = PostSortQuery(model, query);
-            return await query.GetPagedResultAsync(pagingModel.CurrentPage,pagingModel.PageSize);
+            return await query.GetPagedResultAsync(pagingModel.CurrentPage, pagingModel.PageSize);
         }
 
         private IQueryable<Post> PostSearchQuery(PostSearchRequestModel model)
@@ -62,6 +62,11 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
             if (!model.Username.IsNullOrEmpty())
             {
                 query = query.Where(p => p.Username == model.Username);
+            }
+
+            if (model.UserId != 0)
+            {
+                query = query.Where(p => p.UserId == model.UserId);
             }
 
             if (!model.Category.IsNullOrEmpty())

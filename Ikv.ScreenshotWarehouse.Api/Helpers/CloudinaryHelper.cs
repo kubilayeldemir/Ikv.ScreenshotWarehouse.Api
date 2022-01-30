@@ -12,14 +12,13 @@ namespace Ikv.ScreenshotWarehouse.Api.Helpers
         private readonly string _cloudinaryApiKey = Environment.GetEnvironmentVariable("CloudinaryApiKey");
         private readonly string _cloudinaryApiSecret = Environment.GetEnvironmentVariable("CloudinaryApiSecret");
 
-        private readonly Account _account;
         private readonly Cloudinary _cloudinary;
 
         public CloudinaryHelper()
         {
-            _account = new Account(_cloudinaryCloudName, _cloudinaryApiKey, _cloudinaryApiSecret);
-            _cloudinary = new Cloudinary(_account);
-            _cloudinary.Api.Timeout = int.MaxValue;
+            var account = new Account(_cloudinaryCloudName, _cloudinaryApiKey, _cloudinaryApiSecret);
+            _cloudinary = new Cloudinary(account);
+            _cloudinary.Api.Timeout = 30 * 1000;
         }
 
         public async Task<string> UploadBase64Image(string base64, string folderName)
@@ -35,7 +34,6 @@ namespace Ikv.ScreenshotWarehouse.Api.Helpers
                 Folder = folderName
             };
             var imgUploadResult = await _cloudinary.UploadAsync(imgUploadParams);
-            Console.WriteLine(imgUploadResult.StatusCode);
             if (imgUploadResult.StatusCode != HttpStatusCode.OK)
             {
                 return null;
