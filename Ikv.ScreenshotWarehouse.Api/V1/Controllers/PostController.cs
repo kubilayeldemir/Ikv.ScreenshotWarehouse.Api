@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Ikv.ScreenshotWarehouse.Api.Services;
 using Ikv.ScreenshotWarehouse.Api.V1.Models.RequestModels;
@@ -52,12 +53,22 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SavePost([FromBody] PostCreateRequestModel model)
+        public async Task<IActionResult> SavePost([FromBody] PostSaveRequestModel model)
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
 
             var post = await _postService.SaveScreenshot(model, userId == null ? 1 : long.Parse(userId));
             var postResponseModel = new PostResponseModel(post);
+            return Ok(postResponseModel);
+        }
+        
+        [HttpPost("bulk")]
+        public async Task<IActionResult> BulkSavePost([FromBody] List<PostBulkSaveRequestModel> models)
+        {
+            // var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
+            
+            var postResponseModel = await _postService.BulkSaveScreenshots(models, userId == null ? 1 : long.Parse(userId));
             return Ok(postResponseModel);
         }
     }

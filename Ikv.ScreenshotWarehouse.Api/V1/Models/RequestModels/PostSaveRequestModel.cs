@@ -1,6 +1,6 @@
 ﻿namespace Ikv.ScreenshotWarehouse.Api.V1.Models.RequestModels
 {
-    public class PostCreateRequestModel
+    public class PostSaveRequestModel
     {
         public string Category { get; set; }
         public string Title { get; set; }
