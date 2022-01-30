@@ -74,7 +74,6 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 var imageUploadTask =  _cloudinaryHelper.UploadBase64ImageParallel(post.Id, model.FileBase64, userId.ToString());
                 imageUploadTasks.Add(imageUploadTask);
                 postsToUpload.Add(post);
-                //TODO check if post is uploaded Create response model
             }
 
             var uploadTaskResponses = await Task.WhenAll(imageUploadTasks);
