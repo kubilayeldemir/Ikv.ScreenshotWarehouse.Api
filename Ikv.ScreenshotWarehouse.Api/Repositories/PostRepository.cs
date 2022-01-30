@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Ikv.ScreenshotWarehouse.Api.Helpers;
 using Ikv.ScreenshotWarehouse.Api.Persistence.Contexts;
@@ -35,7 +36,8 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
 
         public async Task<List<Post>> SavePostBulk(List<Post> posts)
         {
-            await _ikvContext.Posts.AddRangeAsync(posts);
+            await _ikvContext.Posts.AddRangeAsync(posts,new CancellationToken());
+            await _ikvContext.SaveChangesAsync();
             return posts;
         }
 

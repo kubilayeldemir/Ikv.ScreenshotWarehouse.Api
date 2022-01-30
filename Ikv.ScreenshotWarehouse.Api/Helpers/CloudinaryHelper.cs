@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
@@ -34,7 +35,18 @@ namespace Ikv.ScreenshotWarehouse.Api.Helpers
                 Folder = folderName
             };
             var imgUploadResult = await _cloudinary.UploadAsync(imgUploadParams);
+            Console.WriteLine(imgUploadResult.StatusCode);
+            if (imgUploadResult.StatusCode != HttpStatusCode.OK)
+            {
+                return null;
+            }
             return imgUploadResult.SecureUrl.ToString();
+        }
+        
+        public async Task<(string postId,string url)> UploadBase64ImageParallel(string postId, string base64, string folderName)
+        {
+            var url = await UploadBase64Image(base64, folderName);
+            return (postId, url);
         }
     }
 }

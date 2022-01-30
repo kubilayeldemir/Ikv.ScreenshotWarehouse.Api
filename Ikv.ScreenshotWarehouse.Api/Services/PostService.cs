@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CSharpVitamins;
 using Ikv.ScreenshotWarehouse.Api.Helpers;
@@ -17,7 +18,8 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
         private readonly IUserRepository _userRepository;
 
 
-        public PostService(IPostRepository postRepository, CloudinaryHelper cloudinaryHelper, IUserRepository userRepository)
+        public PostService(IPostRepository postRepository, CloudinaryHelper cloudinaryHelper,
+            IUserRepository userRepository)
         {
             _postRepository = postRepository;
             _cloudinaryHelper = cloudinaryHelper;
@@ -29,23 +31,98 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             return await _postRepository.GetPostById(postId);
         }
 
-        public async Task<Post> SaveScreenshot(PostCreateRequestModel model, long userId)
+        public async Task<Post> SaveScreenshot(PostSaveRequestModel model, long userId)
         {
             var post = new Post
             {
+                Id = ShortGuid.NewGuid(),
                 Category = model.Category,
                 Title = model.Title,
                 GameMap = model.GameMap,
                 UserId = userId,
                 CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
             };
-            post.Id = ShortGuid.NewGuid();
             var url = await _cloudinaryHelper.UploadBase64Image(model.FileBase64, userId.ToString());
             post.FileURL = url;
             post.ScreenshotDate = ParseScreenshotDateFromFileName(model.FileName);
             post.Username = await _userRepository.GetUsernameOfUserFromUserId(userId);
             return await _postRepository.SavePost(post);
+        }
+
+        public async Task<List<PostBulkSaveResponseModel>> BulkSaveScreenshots(List<PostBulkSaveRequestModel> postModels, long userId)
+        {
+            var username = await _userRepository.GetUsernameOfUserFromUserId(userId);
+            var imageUploadTasks = new List<Task<(string postId, string url)>>();
+            var uploadedPosts = new List<Post>();
+            var failedPosts = new List<Post>();
+            var postsToUpload = new List<Post>();
+            foreach (var model in postModels)
+            {
+                var post = new Post
+                {
+                    Id = ShortGuid.NewGuid(),
+                    Category = model.Category,
+                    Title = model.Title,
+                    GameMap = model.GameMap,
+                    UserId = userId,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                    Username = username,
+                    ScreenshotDate = ParseScreenshotDateFromFileName(model.FileName)
+                };
+                var imageUploadTask =  _cloudinaryHelper.UploadBase64ImageParallel(post.Id, model.FileBase64, userId.ToString());
+                imageUploadTasks.Add(imageUploadTask);
+                postsToUpload.Add(post);
+                //TODO check if post is uploaded Create response model
+            }
+
+            var uploadTaskResponses = await Task.WhenAll(imageUploadTasks);
+
+            foreach (var (postId, url) in uploadTaskResponses)
+            {
+                var post = postsToUpload.FirstOrDefault(p => p.Id == postId);
+                if (post == null) continue;
+                if (url != null)
+                {
+                    post.FileURL = url;
+                    uploadedPosts.Add(post);
+                }
+                else
+                {
+                    failedPosts.Add(post);
+                }
+            }
+            
+            var savedPosts = await _postRepository.SavePostBulk(uploadedPosts);
+
+            var responseModel = new List<PostBulkSaveResponseModel>();
+            
+            savedPosts.ForEach(p =>
+            {
+             responseModel.Add(new PostBulkSaveResponseModel
+             {
+                 Id = p.Id,
+                 IsOk = true,
+                 Error = null,
+                 ErrorCode = 0,
+                 IsDuplicate = false,
+                 FileUrl = p.FileURL
+             });   
+            });
+            
+            failedPosts.ForEach(p =>
+            {
+                responseModel.Add(new PostBulkSaveResponseModel
+                {
+                    Id = null,
+                    IsOk = false,
+                    Error = "Dosya buluta yüklenemedi.(Cloudinary error)",
+                    ErrorCode = 4001,
+                    IsDuplicate = false
+                });
+            });
+            return responseModel;
         }
 
         public async Task<List<Post>> SearchPosts(PostSearchRequestModel model)
@@ -69,7 +146,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 {
                     fileName = fileName[..fileName.LastIndexOf('.')];
                 }
-                
+
                 fileName = fileName[6..]; //Remove useless part: "EKRAN_"
 
                 var fileNamesDateAndHourSplitted = fileName.Split('_');
