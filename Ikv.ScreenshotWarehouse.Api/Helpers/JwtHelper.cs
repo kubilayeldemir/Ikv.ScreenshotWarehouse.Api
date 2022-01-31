@@ -20,6 +20,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Helpers
                     {
                         new Claim("id", user.Id.ToString()),
                         new Claim("email", user.Email),
+                        new Claim("username", user.Username),
                         new Claim("role", string.IsNullOrEmpty(user.Role) ? "user" : user.Role),
                     }),
                 Expires = DateTime.UtcNow.AddDays(1),
