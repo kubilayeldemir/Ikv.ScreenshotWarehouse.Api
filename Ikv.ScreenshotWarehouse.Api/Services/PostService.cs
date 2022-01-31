@@ -50,12 +50,14 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             return await _postRepository.SavePost(post);
         }
 
-        public async Task<List<PostBulkSaveResponseModel>> BulkSaveScreenshots(List<PostBulkSaveRequestModel> postModels, long userId)
+        public async Task<List<PostBulkSaveResponseModel>> BulkSaveScreenshots(
+            List<PostBulkSaveRequestModel> postModels, long userId)
         {
             var username = await _userRepository.GetUsernameOfUserFromUserId(userId);
             var imageUploadTasks = new List<Task<(string postId, string url)>>();
             var uploadedPosts = new List<Post>();
-            var failedPosts = new List<Post>();
+            var uploadFailedPosts = new List<Post>();
+            var duplicatePosts = new List<Post>();
             var postsToUpload = new List<Post>();
             foreach (var model in postModels)
             {
@@ -69,9 +71,19 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
                     Username = username,
-                    ScreenshotDate = ParseScreenshotDateFromFileName(model.FileName)
+                    ScreenshotDate = ParseScreenshotDateFromFileName(model.FileName),
+                    Md5 = Md5Helper.CreateMd5Checksum(model.FileBase64)
                 };
-                var imageUploadTask =  _cloudinaryHelper.UploadBase64ImageParallel(post.Id, model.FileBase64, userId.ToString());
+                var duplicateImageCount = postsToUpload.Count(p => p.Md5 == post.Md5);
+
+                if (duplicateImageCount > 0)
+                {
+                    duplicatePosts.Add(post);
+                    continue;
+                }
+
+                var imageUploadTask =
+                    _cloudinaryHelper.UploadBase64ImageParallel(post.Id, model.FileBase64, userId.ToString());
                 imageUploadTasks.Add(imageUploadTask);
                 postsToUpload.Add(post);
             }
@@ -89,47 +101,58 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 }
                 else
                 {
-                    failedPosts.Add(post);
+                    uploadFailedPosts.Add(post);
                 }
             }
-            
+
             var savedPosts = await _postRepository.SavePostBulk(uploadedPosts);
 
             var responseModel = new List<PostBulkSaveResponseModel>();
-            
+
             savedPosts.ForEach(p =>
-            {
-             responseModel.Add(new PostBulkSaveResponseModel
-             {
-                 Id = p.Id,
-                 IsOk = true,
-                 Error = null,
-                 ErrorCode = 0,
-                 IsDuplicate = false,
-                 FileUrl = p.FileURL
-             });   
-            });
-            
-            failedPosts.ForEach(p =>
             {
                 responseModel.Add(new PostBulkSaveResponseModel
                 {
-                    Id = null,
-                    IsOk = false,
-                    Error = "Dosya buluta yüklenemedi.(Cloudinary error)",
-                    ErrorCode = 4001,
-                    IsDuplicate = false
+                    Id = p.Id,
+                    IsOk = true,
+                    Error = null,
+                    ErrorCode = 0,
+                    FileUrl = p.FileURL
                 });
             });
+
+            uploadFailedPosts.ForEach(p =>
+            {
+                PostBulkSaveResponseModel.CreateFailedPostResponseModel(4001,
+                    "Dosya buluta yüklenemedi.(Cloudinary error)");
+            });
+
+            duplicatePosts.ForEach(p =>
+            {
+                PostBulkSaveResponseModel.CreateFailedPostResponseModel(4002,
+                    "Bu dosya tekrarlandığı için yüklenmedi.");
+            });
             return responseModel;
+        }
+
+        private static PostBulkSaveResponseModel CreateFailedPostSaveResponse(int errorCode, string errorMessage)
+        {
+            return new PostBulkSaveResponseModel
+            {
+                Id = null,
+                IsOk = false,
+                Error = errorMessage,
+                ErrorCode = errorCode
+            };
         }
 
         public async Task<List<Post>> SearchPosts(PostSearchRequestModel model)
         {
             return await _postRepository.SearchPosts(model);
         }
-        
-        public async Task<PagedResult<Post>> SearchPostsPaged(PostSearchRequestModel model, PagingRequestModel pagingModel )
+
+        public async Task<PagedResult<Post>> SearchPostsPaged(PostSearchRequestModel model,
+            PagingRequestModel pagingModel)
         {
             return await _postRepository.SearchPostsPaged(model, pagingModel);
         }

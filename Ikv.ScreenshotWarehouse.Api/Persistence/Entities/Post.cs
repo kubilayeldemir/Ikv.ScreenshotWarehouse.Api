@@ -10,6 +10,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistence.Entities
         public string Category { get; set; }
         public string Title { get; set; }
         public string FileURL { get; set; }
+        public string Md5 { get; set; }
         public DateTime ScreenshotDate { get; set; }
         public string GameMap { get; set; }
         public bool IsValidated { get; set; }
