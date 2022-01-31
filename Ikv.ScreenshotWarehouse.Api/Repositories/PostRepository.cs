@@ -27,6 +27,23 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
             return await _ikvContext.Posts.Where(x => x.Id == postId).Include(x => x.User).FirstOrDefaultAsync();
         }
 
+        public async Task<List<Post>> GetPostsByIdsBulk(List<string> postIds)
+        {
+            return await _ikvContext.Posts.Where(p => postIds.Contains(p.Id)).ToListAsync();
+        }
+        
+        public async Task<Post> UpdatePost(Post post)
+        {
+            await _ikvContext.SaveChangesAsync();
+            return post;
+        }
+        
+        public async Task<List<Post>> UpdatePosts(List<Post> post)
+        {
+            await _ikvContext.SaveChangesAsync();
+            return post;
+        }
+
         public async Task<Post> SavePost(Post post)
         {
             await _ikvContext.Posts.AddAsync(post);
@@ -36,7 +53,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
 
         public async Task<List<Post>> SavePostBulk(List<Post> posts)
         {
-            await _ikvContext.Posts.AddRangeAsync(posts,new CancellationToken());
+            await _ikvContext.Posts.AddRangeAsync(posts, new CancellationToken());
             await _ikvContext.SaveChangesAsync();
             return posts;
         }

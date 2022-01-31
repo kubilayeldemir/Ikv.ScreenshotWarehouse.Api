@@ -71,5 +71,15 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
             var postResponseModel = await _postService.BulkSaveScreenshots(models, userId == null ? 1 : long.Parse(userId));
             return Ok(postResponseModel);
         }
+        
+        [HttpPost("validate")]
+        public async Task<IActionResult> ValidatePosts([FromBody] List<string> postIds)
+        {
+            // var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
+            
+            var postResponseModel = await _postService.ValidatePosts(postIds);
+            return Ok(postResponseModel);
+        }
     }
 }

@@ -135,15 +135,11 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             return responseModel;
         }
 
-        private static PostBulkSaveResponseModel CreateFailedPostSaveResponse(int errorCode, string errorMessage)
+        public async Task<List<Post>> ValidatePosts(List<string> postIds)
         {
-            return new PostBulkSaveResponseModel
-            {
-                Id = null,
-                IsOk = false,
-                Error = errorMessage,
-                ErrorCode = errorCode
-            };
+            var postsToValidate = await _postRepository.GetPostsByIdsBulk(postIds);
+            postsToValidate.ForEach(p => p.IsValidated = true);
+            return await _postRepository.UpdatePosts(postsToValidate);
         }
 
         public async Task<List<Post>> SearchPosts(PostSearchRequestModel model)
@@ -158,10 +154,10 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
         }
 
         private static DateTime ParseScreenshotDateFromFileName(string fileName)
-        {
-            var originalFileName = fileName;
             //Example file name with date:  EKRAN_01-15-22_00.40.28.JPG -> real date -> 15.01.2022 00:40
             //Structure: Month-Day-Year's last 2 digit-Hour-Minute-Second
+        {
+            var originalFileName = fileName;
             try
             {
                 if (fileName.EndsWith(".JPG") || fileName.EndsWith(".BMP") || fileName.EndsWith("JPEG"))
