@@ -123,14 +123,14 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
 
             uploadFailedPosts.ForEach(p =>
             {
-                PostBulkSaveResponseModel.CreateFailedPostResponseModel(4001,
-                    "Dosya buluta yüklenemedi.(Cloudinary error)");
+                responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4001,
+                    "Dosya buluta yüklenemedi.(Cloudinary error)"));
             });
 
             duplicatePosts.ForEach(p =>
             {
-                PostBulkSaveResponseModel.CreateFailedPostResponseModel(4002,
-                    "Bu dosya tekrarlandığı için yüklenmedi.");
+                responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4002,
+                    "Bu dosya tekrarlandığı için yüklenmedi."));
             });
             return responseModel;
         }
