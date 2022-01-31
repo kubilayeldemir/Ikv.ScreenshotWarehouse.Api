@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ikv.ScreenshotWarehouse.Api.Helpers;
 using Ikv.ScreenshotWarehouse.Api.Services;
 using Ikv.ScreenshotWarehouse.Api.V1.Models.RequestModels;
 using Ikv.ScreenshotWarehouse.Api.V1.Models.ResponseModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
@@ -71,7 +73,7 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
             var postResponseModel = await _postService.BulkSaveScreenshots(models, userId == null ? 1 : long.Parse(userId));
             return Ok(postResponseModel);
         }
-        
+        [Authorize(Roles = "admin")]
         [HttpPost("validate")]
         public async Task<IActionResult> ValidatePosts([FromBody] List<string> postIds)
         {
