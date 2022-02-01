@@ -28,5 +28,9 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistence.Contexts
             modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => p.ScreenshotDate); });
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(IkvContext).Assembly);
         }
+        // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        // {
+        //     optionsBuilder.LogTo(Console.WriteLine);
+        // }
     }
 }
