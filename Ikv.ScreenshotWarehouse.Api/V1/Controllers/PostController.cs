@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Ikv.ScreenshotWarehouse.Api.Helpers;
 using Ikv.ScreenshotWarehouse.Api.Services;
 using Ikv.ScreenshotWarehouse.Api.V1.Models.RequestModels;
 using Ikv.ScreenshotWarehouse.Api.V1.Models.ResponseModels;
