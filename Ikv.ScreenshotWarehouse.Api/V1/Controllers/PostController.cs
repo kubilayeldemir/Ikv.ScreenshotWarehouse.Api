@@ -59,6 +59,10 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
             var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
 
             var post = await _postService.SaveScreenshot(model, userId == null ? 1 : long.Parse(userId));
+            if (post == null)
+            {
+                return BadRequest();
+            }
             var postResponseModel = new PostResponseModel(post);
             return Ok(postResponseModel);
         }
