@@ -25,7 +25,10 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistence.Contexts
                 .HasForeignKey(p => p.UserId);
 
             modelBuilder.Entity<User>(entity => { entity.HasIndex(u => u.Username).IsUnique(); });
+            modelBuilder.Entity<User>(entity => { entity.HasIndex(u => u.Email).IsUnique(); });
             modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => p.ScreenshotDate); });
+            modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => p.CreatedAt); });
+            modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => p.IsValidated); });
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(IkvContext).Assembly);
         }
         // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
