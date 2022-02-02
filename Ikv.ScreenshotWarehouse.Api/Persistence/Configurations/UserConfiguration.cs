@@ -12,6 +12,9 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistence.Configurations
                 .HasMaxLength(320)
                 .IsRequired();
 
+            builder.Property(p => p.Email)
+                .HasColumnType("CITEXT");
+
             builder.Property(u => u.Username)
                 .HasMaxLength(64)
                 .IsRequired();

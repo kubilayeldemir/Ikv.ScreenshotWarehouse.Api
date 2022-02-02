@@ -8,6 +8,12 @@ Set required env variables on your machine for docker-compose.
 
 For Dockerfile you need to pass variables as arguments.
 
+PostgreSQL database needs to support CITEXT
+Add citext extension using code below
+```
+CREATE EXTENSION citext;
+```
+
 ## Docker Compose
 ```
 cd .\Ikv.ScreenshotWarehouse.Api\
