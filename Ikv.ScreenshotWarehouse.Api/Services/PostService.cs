@@ -8,6 +8,7 @@ using Ikv.ScreenshotWarehouse.Api.Persistence.Entities;
 using Ikv.ScreenshotWarehouse.Api.Repositories;
 using Ikv.ScreenshotWarehouse.Api.V1.Models.RequestModels;
 using Ikv.ScreenshotWarehouse.Api.V1.Models.ResponseModels;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Ikv.ScreenshotWarehouse.Api.Services
 {
@@ -43,6 +44,10 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
             };
+            if (model.FileBase64.IsNullOrEmpty())
+            {
+                return null;
+            }
             var url = await _cloudinaryHelper.UploadBase64Image(model.FileBase64, userId.ToString());
             post.FileURL = url;
             post.ScreenshotDate = ParseScreenshotDateFromFileName(model.FileName);
@@ -59,6 +64,8 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             var uploadFailedPosts = new List<Post>();
             var duplicatePosts = new List<Post>();
             var postsToUpload = new List<Post>();
+            var nonValidPosts = new List<Post>();
+
             foreach (var model in postModels)
             {
                 var post = new Post
@@ -74,6 +81,11 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                     ScreenshotDate = ParseScreenshotDateFromFileName(model.FileName),
                     Md5 = Md5Helper.CreateMd5Checksum(model.FileBase64)
                 };
+                if (model.FileBase64.IsNullOrEmpty())
+                {
+                    nonValidPosts.Add(post);
+                    continue;
+                }
                 var duplicateImageCount = postsToUpload.Count(p => p.Md5 == post.Md5);
 
                 if (duplicateImageCount > 0)
@@ -120,7 +132,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                     FileUrl = p.FileURL
                 });
             });
-
+            
             uploadFailedPosts.ForEach(p =>
             {
                 responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4001,
@@ -132,6 +144,13 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4002,
                     "Bu dosya tekrarlandığı için yüklenmedi."));
             });
+            
+            nonValidPosts.ForEach(p =>
+            {
+                responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4003,
+                    "Dosya bulunamadı."));
+            });
+            
             return responseModel;
         }
 
