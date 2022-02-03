@@ -37,7 +37,7 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
             {
                 return BadRequest(new
                 {
-                    Message = $"User with email {model.Email} already exists.",
+                    Message = $"Seçtiğiniz kullanıcı adını veya mail adresini kullanan bir kullanıcı var.",
                     Code = 400001
                 });
             }
