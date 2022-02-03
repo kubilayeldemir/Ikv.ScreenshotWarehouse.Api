@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using FluentValidation.AspNetCore;
 using Ikv.ScreenshotWarehouse.Api.Helpers;
 using Ikv.ScreenshotWarehouse.Api.Persistence.Contexts;
 using Ikv.ScreenshotWarehouse.Api.Repositories;
@@ -41,6 +42,10 @@ namespace Ikv.ScreenshotWarehouse.Api
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IPostService, PostService>();
             services.AddSingleton<CloudinaryHelper>();
+            
+            services.AddMvc()
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
+
 
             services.AddAuthentication(x =>
                 {
