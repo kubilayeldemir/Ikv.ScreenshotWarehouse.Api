@@ -34,6 +34,7 @@ namespace Ikv.ScreenshotWarehouse.Api
         {
             services.AddRouting(opt => opt.LowercaseUrls = true);
             services.AddControllers();
+            services.AddCors();
             
             services.AddDbContext<IkvContext>(options => options.UseNpgsql(DbConnString));
 
@@ -110,6 +111,14 @@ namespace Ikv.ScreenshotWarehouse.Api
 
             app.UseAuthentication();
             app.UseAuthorization();
+            
+            app.UseCors(builder =>
+            {
+                builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
