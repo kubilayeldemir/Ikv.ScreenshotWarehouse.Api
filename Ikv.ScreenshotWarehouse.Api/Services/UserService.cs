@@ -19,6 +19,10 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
         public async Task<(bool isAuthenticated, User user)> AuthenticateUser(string username, string password)
         {
             var user = await _userRepository.GetUserByUsername(username);
+            if (user is null)
+            {
+                return (false, null);
+            }
             var userSalt = user.Salt;
             var hashedModel = EncryptionHelper.EncryptData(password, userSalt);
             var hashedPassword = hashedModel.hashedData;
