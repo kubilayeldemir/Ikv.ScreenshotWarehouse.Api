@@ -76,6 +76,7 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
             var postResponseModel = await _postService.BulkSaveScreenshots(models, userId == null ? 1 : long.Parse(userId));
             return Ok(postResponseModel);
         }
+        
         [Authorize(Roles = "admin")]
         [HttpPost("validate")]
         public async Task<IActionResult> ValidatePosts([FromBody] List<string> postIds)

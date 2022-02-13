@@ -48,6 +48,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             {
                 return null;
             }
+
             var url = await _cloudinaryHelper.UploadBase64Image(model.FileBase64, userId.ToString());
             post.FileURL = url;
             post.ScreenshotDate = ParseScreenshotDateFromFileName(model.FileName);
@@ -59,12 +60,15 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             List<PostBulkSaveRequestModel> postModels, long userId)
         {
             var username = await _userRepository.GetUsernameOfUserFromUserId(userId);
+            var existingPostsMd5List = await _postRepository.CheckPostExistsByMd5(postModels
+                .Select(p => Md5Helper.CreateMd5Checksum(p.FileBase64)).ToList());
             var imageUploadTasks = new List<Task<(string postId, string url)>>();
             var uploadedPosts = new List<Post>();
             var uploadFailedPosts = new List<Post>();
-            var duplicatePosts = new List<Post>();
+            var duplicatePostsOnRequest = new List<Post>();
             var postsToUpload = new List<Post>();
             var nonValidPosts = new List<Post>();
+            var existingPostsOnDb = new List<Post>();
 
             foreach (var model in postModels)
             {
@@ -86,11 +90,18 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                     nonValidPosts.Add(post);
                     continue;
                 }
+
                 var duplicateImageCount = postsToUpload.Count(p => p.Md5 == post.Md5);
 
                 if (duplicateImageCount > 0)
                 {
-                    duplicatePosts.Add(post);
+                    duplicatePostsOnRequest.Add(post);
+                    continue;
+                }
+
+                if (existingPostsMd5List.Contains(post.Md5))
+                {
+                    existingPostsOnDb.Add(post);
                     continue;
                 }
 
@@ -132,25 +143,31 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                     FileUrl = p.FileURL
                 });
             });
-            
+
             uploadFailedPosts.ForEach(p =>
             {
                 responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4001,
                     "Dosya buluta yüklenemedi.(Cloudinary error)"));
             });
 
-            duplicatePosts.ForEach(p =>
+            duplicatePostsOnRequest.ForEach(p =>
             {
                 responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4002,
                     "Bu dosya tekrarlandığı için yüklenmedi."));
             });
-            
+
             nonValidPosts.ForEach(p =>
             {
                 responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4003,
                     "Dosya bulunamadı."));
             });
             
+            existingPostsOnDb.ForEach(p =>
+            {
+                responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4004,
+                    "Bu dosyanın aynısı sistemde zaten bulunduğu için yüklenmedi."));
+            });
+
             return responseModel;
         }
 

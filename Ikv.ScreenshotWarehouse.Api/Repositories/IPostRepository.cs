@@ -16,5 +16,6 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
         Task<List<Post>> SavePostBulk(List<Post> posts);
         Task<List<Post>> SearchPosts(PostSearchRequestModel model);
         Task<PagedResult<Post>> SearchPostsPaged(PostSearchRequestModel model, PagingRequestModel pagingModel);
+        Task<List<string>> CheckPostExistsByMd5(List<string> md5List);
     }
 }
