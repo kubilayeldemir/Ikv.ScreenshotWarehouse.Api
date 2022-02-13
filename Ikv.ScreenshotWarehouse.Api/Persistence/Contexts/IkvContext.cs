@@ -29,6 +29,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistence.Contexts
             modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => p.ScreenshotDate); });
             modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => p.CreatedAt); });
             modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => p.IsValidated); });
+            modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => p.Md5).IsUnique(); });
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(IkvContext).Assembly);
         }
         // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

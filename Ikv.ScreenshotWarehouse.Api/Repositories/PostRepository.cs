@@ -71,6 +71,12 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
             query = PostSortQuery(model, query);
             return await query.GetPagedResultAsync(pagingModel.CurrentPage, pagingModel.PageSize);
         }
+        
+        public async Task<List<string>> CheckPostExistsByMd5(List<string> md5List)
+        {
+            var result = await _ikvContext.Posts.Where(p => md5List.Contains(p.Md5)).Select(p => p.Md5).ToListAsync();
+            return result;
+        }
 
         private IQueryable<Post> PostSearchQuery(PostSearchRequestModel model)
         {

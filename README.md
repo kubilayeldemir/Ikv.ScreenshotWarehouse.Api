@@ -14,6 +14,12 @@ Add citext extension using code below
 CREATE EXTENSION citext;
 ```
 
+EF Core Migration instructions:
+```
+dotnet ef migrations add InitialMigration
+dotnet ef database update || dotnet ef migrations script
+```
+
 ## Docker Compose
 ```
 cd .\Ikv.ScreenshotWarehouse.Api\
