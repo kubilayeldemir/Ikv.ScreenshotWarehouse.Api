@@ -69,6 +69,8 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             var postsToUpload = new List<Post>();
             var nonValidPosts = new List<Post>();
             var existingPostsOnDb = new List<Post>();
+            var fileSizeNotValidPosts = new List<Post>();
+
 
             foreach (var model in postModels)
             {
@@ -88,6 +90,13 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 if (model.FileBase64.IsNullOrEmpty())
                 {
                     nonValidPosts.Add(post);
+                    continue;
+                }
+
+                var byteSizeOfFile = System.Text.Encoding.ASCII.GetByteCount(model.FileBase64);
+                if (byteSizeOfFile > 1000*1000)
+                {
+                    fileSizeNotValidPosts.Add(post);
                     continue;
                 }
 
@@ -166,6 +175,12 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             {
                 responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4004,
                     "Bu dosyanın aynısı sistemde zaten bulunduğu için yüklenmedi."));
+            });
+            
+            fileSizeNotValidPosts.ForEach(p =>
+            {
+                responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4005,
+                    "Dosyanın boyutu belirlenen maksimum boyuttan büyük olduğu için yüklenmedi."));
             });
 
             return responseModel;
