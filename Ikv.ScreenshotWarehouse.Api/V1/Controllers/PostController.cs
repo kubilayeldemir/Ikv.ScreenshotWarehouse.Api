@@ -54,6 +54,7 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> SavePost([FromBody] PostSaveRequestModel model)
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
