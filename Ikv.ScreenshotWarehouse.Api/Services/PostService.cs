@@ -87,6 +87,14 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                     ScreenshotDate = ParseScreenshotDateFromFileName(model.FileName),
                     Md5 = Md5Helper.CreateMd5Checksum(model.FileBase64)
                 };
+                post.PostRawData = new PostRawData
+                {
+                    PostId = post.Id,
+                    FileBase64 = model.FileBase64,
+                    FileMd5 = post.Md5,
+                    CreatedAt = post.CreatedAt,
+                    UpdatedAt = post.UpdatedAt
+                };
                 if (model.FileBase64.IsNullOrEmpty())
                 {
                     nonValidPosts.Add(post);

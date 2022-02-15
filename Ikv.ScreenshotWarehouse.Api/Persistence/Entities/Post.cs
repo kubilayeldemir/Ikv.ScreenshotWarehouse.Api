@@ -17,5 +17,6 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistence.Entities
         public User User { get; set; }
         public string Username { get; set; }
         public long UserId { get; set; }
+        public PostRawData PostRawData { get; set; }
     }
 }
