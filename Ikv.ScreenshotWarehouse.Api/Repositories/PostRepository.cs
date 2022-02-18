@@ -141,7 +141,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
             }
             else
             {
-                query = query.OrderBy(p => p.CreatedAt);
+                query = query.OrderByDescending(p => p.CreatedAt);
             }
 
             return query;
