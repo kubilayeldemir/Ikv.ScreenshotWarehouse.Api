@@ -70,7 +70,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             var nonValidPosts = new List<Post>();
             var existingPostsOnDb = new List<Post>();
             var fileSizeNotValidPosts = new List<Post>();
-
+            var fileTypeNotValidPosts = new List<Post>();
 
             foreach (var model in postModels)
             {
@@ -98,6 +98,12 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 if (model.FileBase64.IsNullOrEmpty())
                 {
                     nonValidPosts.Add(post);
+                    continue;
+                }
+
+                if (!IsBase64FileTypeValid(model.FileBase64))
+                {
+                    fileTypeNotValidPosts.Add(post);
                     continue;
                 }
 
@@ -190,6 +196,12 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4005,
                     "Dosyanın boyutu belirlenen maksimum boyuttan büyük olduğu için yüklenmedi."));
             });
+            
+            fileTypeNotValidPosts.ForEach(p =>
+            {
+                responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4006,
+                    "Yüklediğiniz dosyanın tipi uygun olmadığı için yüklenmedi.(Sisteme JPG JPEG PNG dosyalar yüklenebilir"));
+            });
 
             return responseModel;
         }
@@ -210,6 +222,28 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             PagingRequestModel pagingModel)
         {
             return await _postRepository.SearchPostsPaged(model, pagingModel);
+        }
+
+        private bool IsBase64FileTypeValid(string base64String)
+        {
+            var strings = base64String.Split(",");
+            var isValid = false;
+            string extension;
+            switch (strings[0]) {
+                case "data:image/jpeg;base64":
+                    extension = "jpeg";
+                    isValid = true;
+                    break;
+                case "data:image/jpg;base64":
+                    extension = "jpeg";
+                    isValid = true;
+                    break;
+                case "data:image/png;base64":
+                    extension = "png";
+                    isValid = true;
+                    break;
+            }
+            return isValid;
         }
 
         private static DateTime ParseScreenshotDateFromFileName(string fileName)
