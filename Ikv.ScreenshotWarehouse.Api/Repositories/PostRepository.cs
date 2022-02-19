@@ -80,7 +80,15 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
 
         private IQueryable<Post> PostSearchQuery(PostSearchRequestModel model)
         {
-            var query = _ikvContext.Posts.Where(p => p.IsValidated == model.IsValidated);
+            var query = _ikvContext.Posts.AsQueryable();
+            if (model.OnlyNonValidatedPosts)
+            {
+                query = _ikvContext.Posts.Where(p => p.IsValidated == false);
+            }
+            else if (!model.IgnoreValidation)
+            {
+                query = _ikvContext.Posts.Where(p => p.IsValidated == true);
+            }
 
             if (!model.Username.IsNullOrEmpty())
             {
