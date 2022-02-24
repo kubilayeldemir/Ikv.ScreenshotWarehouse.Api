@@ -242,6 +242,10 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                     extension = "png";
                     isValid = true;
                     break;
+                case "data:image/bmp;base64":
+                    extension = "bmp";
+                    isValid = true;
+                    break;
             }
             return isValid;
         }
@@ -253,11 +257,6 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             var originalFileName = fileName;
             try
             {
-                if (fileName.EndsWith(".JPG") || fileName.EndsWith(".BMP") || fileName.EndsWith("JPEG"))
-                {
-                    fileName = fileName[..fileName.LastIndexOf('.')];
-                }
-
                 fileName = fileName[6..]; //Remove useless part: "EKRAN_"
 
                 var fileNamesDateAndHourSplitted = fileName.Split('_');
