@@ -78,6 +78,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 {
                     Id = ShortGuid.NewGuid(),
                     Category = model.Category,
+                    Type = "image",
                     Title = model.Title,
                     GameMap = model.GameMap,
                     UserId = userId,
@@ -201,6 +202,43 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             {
                 responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4006,
                     "Yüklediğiniz dosyanın tipi uygun olmadığı için yüklenmedi.(Sisteme JPG JPEG PNG dosyalar yüklenebilir"));
+            });
+
+            return responseModel;
+        }
+
+        public async Task<List<PostBulkSaveResponseModel>> BulkSaveVideos(List<VideoPostBulkSaveRequestModel> videos, long userId)
+        {
+            var username = await _userRepository.GetUsernameOfUserFromUserId(userId);
+
+            var posts = videos.Select(video => new Post
+                {
+                    Id = ShortGuid.NewGuid(),
+                    Type = "video",
+                    Title = video.VideoCustomTitle,
+                    UserId = userId,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                    Username = username,
+                    FileURL = video.VideoUrl,
+                    Md5 = Md5Helper.CreateMd5Checksum(video.VideoUrl)
+                })
+                .ToList();
+
+            var savedPosts = await _postRepository.SavePostBulk(posts);
+            
+            var responseModel = new List<PostBulkSaveResponseModel>();
+            
+            savedPosts.ForEach(p =>
+            {
+                responseModel.Add(new PostBulkSaveResponseModel
+                {
+                    Id = p.Id,
+                    IsOk = true,
+                    Error = null,
+                    ErrorCode = 0,
+                    FileUrl = p.FileURL
+                });
             });
 
             return responseModel;

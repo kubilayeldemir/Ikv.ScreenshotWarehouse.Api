@@ -13,6 +13,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistence.Entities
         public string Salt { get; set; }
         public string Role { get; set; }
         public ICollection<Post> Posts { get; set; }
+        public ICollection<VideoPost> VideoPosts { get; set; }
         public bool CheckIfUserCredentialsCorrect(string username, string password)
         {
             return Username == username && Password == password;

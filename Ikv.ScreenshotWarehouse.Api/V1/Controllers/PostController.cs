@@ -78,6 +78,16 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
             return Ok(postResponseModel);
         }
         
+        [HttpPost("bulkvideo")]
+        public async Task<IActionResult> BulkSavePostVideos([FromBody] List<VideoPostBulkSaveRequestModel> models)
+        {
+            // var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
+            
+            var postResponseModel = await _postService.BulkSaveVideos(models, userId == null ? 1 : long.Parse(userId));
+            return Ok(postResponseModel);
+        }
+        
         [Authorize(Roles = "admin")]
         [HttpPost("validate")]
         public async Task<IActionResult> ValidatePosts([FromBody] List<string> postIds)

@@ -1,4 +1,5 @@
-﻿using Ikv.ScreenshotWarehouse.Api.Persistence.Entities;
+﻿using System;
+using Ikv.ScreenshotWarehouse.Api.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ikv.ScreenshotWarehouse.Api.Persistence.Contexts
@@ -25,17 +26,25 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistence.Contexts
                 .WithMany(p => p.Posts)
                 .HasForeignKey(p => p.UserId);
 
+            modelBuilder.Entity<VideoPost>()
+                .HasOne<User>(u => u.User)
+                .WithMany(p => p.VideoPosts)
+                .HasForeignKey(p => p.UserId);
+
             modelBuilder.Entity<User>(entity => { entity.HasIndex(u => u.Username).IsUnique(); });
             modelBuilder.Entity<User>(entity => { entity.HasIndex(u => u.Email).IsUnique(); });
             modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => p.ScreenshotDate); });
             modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => p.CreatedAt); });
             modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => p.IsValidated); });
             modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => p.Md5).IsUnique(); });
+            modelBuilder.Entity<VideoPost>(entity => { entity.HasIndex(p => p.IsValidated); });
+
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(IkvContext).Assembly);
         }
-        // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        // {
-        //     optionsBuilder.LogTo(Console.WriteLine);
-        // }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.LogTo(Console.WriteLine);
+        }
     }
 }
