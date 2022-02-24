@@ -38,7 +38,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Helpers
             {
                 return null;
             }
-            return imgUploadResult.SecureUrl.ToString();
+            return imgUploadResult.PublicId;
         }
         
         public async Task<(string postId,string url)> UploadBase64ImageParallel(string postId, string base64, string folderName)
