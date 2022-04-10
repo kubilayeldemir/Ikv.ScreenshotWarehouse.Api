@@ -77,7 +77,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 var post = new Post
                 {
                     Id = ShortGuid.NewGuid(),
-                    Category = model.Category,
+                    Category = "user",
                     Title = model.Title,
                     GameMap = model.GameMap,
                     UserId = userId,
