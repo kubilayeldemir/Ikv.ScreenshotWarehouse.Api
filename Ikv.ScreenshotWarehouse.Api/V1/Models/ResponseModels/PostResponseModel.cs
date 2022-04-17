@@ -13,6 +13,7 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Models.ResponseModels
         public string FileUrl { get; set; }
         public DateTime ScreenshotDate { get; set; }
         public string GameMap { get; set; }
+        public string GameServer { get; set; }
         public bool IsValidated { get; set; }
 
         public PostResponseModel(Post post)
@@ -26,6 +27,7 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Models.ResponseModels
             ScreenshotDate = post.ScreenshotDate;
             GameMap = post.GameMap;
             IsValidated = post.IsValidated;
+            GameServer = post.GameServer;
         }
     }
 }
