@@ -28,6 +28,9 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistence.Configurations
 
             builder.Property(p => p.Username)
                 .HasMaxLength(64);
+            
+            builder.Property(p => p.GameServer)
+                .HasMaxLength(20);
         }
     }
 }

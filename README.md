@@ -20,6 +20,12 @@ dotnet ef migrations add InitialMigration
 dotnet ef database update || dotnet ef migrations script
 ```
 
+To Get the Script of Last Migration:
+```
+dotnet ef migrations script 20220223182843_InitialMigration
+```
+
+
 ## Docker Compose
 ```
 cd .\Ikv.ScreenshotWarehouse.Api\
