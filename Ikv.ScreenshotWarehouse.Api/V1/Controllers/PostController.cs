@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ikv.ScreenshotWarehouse.Api.Helpers;
 using Ikv.ScreenshotWarehouse.Api.Services;
 using Ikv.ScreenshotWarehouse.Api.V1.Models.RequestModels;
 using Ikv.ScreenshotWarehouse.Api.V1.Models.ResponseModels;
@@ -32,13 +34,14 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
         public async Task<IActionResult> SearchPosts([FromQuery] PostSearchRequestModel model)
         {
             var post = await _postService.SearchPosts(model);
-            
+
             var postResponseModel = post.ConvertAll(p => new PostResponseModel(p));
             return Ok(postResponseModel);
         }
-        
+
         [HttpGet("paged")]
-        public async Task<IActionResult> SearchPostsPaged([FromQuery] PostSearchRequestModel model, [FromQuery] PagingRequestModel pagingModel)
+        public async Task<IActionResult> SearchPostsPaged([FromQuery] PostSearchRequestModel model,
+            [FromQuery] PagingRequestModel pagingModel)
         {
             var postsPaged = await _postService.SearchPostsPaged(model, pagingModel);
 
@@ -48,7 +51,7 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
                 PageCount = postsPaged.PageCount,
                 PageSize = postsPaged.PageSize
             };
-            
+
             pagedResponseModel.Data = postsPaged.Data.ConvertAll(p => new PostResponseModel(p));
             return Ok(pagedResponseModel);
         }
@@ -64,27 +67,54 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
             {
                 return BadRequest();
             }
+
             var postResponseModel = new PostResponseModel(post);
             return Ok(postResponseModel);
         }
-        
+
         [HttpPost("bulk")]
         public async Task<IActionResult> BulkSavePost([FromBody] List<PostBulkSaveRequestModel> models)
         {
             // var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
             var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
-            
-            var postResponseModel = await _postService.BulkSaveScreenshots(models, userId == null ? 1 : long.Parse(userId));
+
+            var postResponseModel =
+                await _postService.BulkSaveScreenshots(models, userId == null ? 1 : long.Parse(userId));
             return Ok(postResponseModel);
         }
-        
+
+        [Authorize(Roles = "admin")]
+        [HttpPost("bulk-save-raw")]
+        public async Task<IActionResult> BulkSaveRawImages([FromBody] List<RawPostBulkSaveRequestModel> models)
+        {
+            // var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
+            
+            models.ForEach(x =>
+            {
+                try
+                {
+                    x.Timestamp = TurkishMonthsHelper.ParseTurkishDatetimeString(x.TimestampString);
+                }
+                catch (Exception e)
+                {
+                    x.Timestamp = DateTime.Now;
+                    Console.WriteLine("Can't parse this date:" + x.TimestampString);
+                }
+            });
+
+            var postResponseModel =
+                await _postService.BulkSaveRawImages(models, userId == null ? 1 : long.Parse(userId));
+            return Ok(postResponseModel);
+        }
+
         [Authorize(Roles = "admin")]
         [HttpPost("validate")]
         public async Task<IActionResult> ValidatePosts([FromBody] List<string> postIds)
         {
             // var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
             var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
-            
+
             var postResponseModel = await _postService.ValidatePosts(postIds);
             return Ok(postResponseModel);
         }

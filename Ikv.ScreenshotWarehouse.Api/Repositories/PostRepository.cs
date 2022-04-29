@@ -85,9 +85,15 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
             {
                 query = _ikvContext.Posts.Where(p => p.IsValidated == false);
             }
+            
             else if (!model.IgnoreValidation)
             {
                 query = _ikvContext.Posts.Where(p => p.IsValidated == true);
+            }
+
+            if (model.IncludeRawData)
+            {
+                query = _ikvContext.Posts.Include(post => post.PostRawData);
             }
 
             if (!model.Username.IsNullOrEmpty())
