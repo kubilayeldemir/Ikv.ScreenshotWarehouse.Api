@@ -31,6 +31,11 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
         {
             return await _postRepository.GetPostById(postId);
         }
+        
+        public async Task<Post> GetPostWithRawDataById(string postId)
+        {
+            return await _postRepository.GetPostWithRawDataById(postId);
+        }
 
         public async Task<Post> SaveScreenshot(PostSaveRequestModel model, long userId)
         {

@@ -29,6 +29,14 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
             var postResponseModel = new PostResponseModel(post);
             return Ok(postResponseModel);
         }
+        
+        [HttpGet("raw/{postId}")]
+        public async Task<IActionResult> GetPostWithRawDataById([FromRoute] string postId)
+        {
+            var post = await _postService.GetPostWithRawDataById(postId);
+            var postResponseModel = new PostResponseModel(post);
+            return Ok(postResponseModel);
+        }
 
         [HttpGet("all")]
         public async Task<IActionResult> SearchPosts([FromQuery] PostSearchRequestModel model)

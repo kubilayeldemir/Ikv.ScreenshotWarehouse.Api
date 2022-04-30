@@ -9,6 +9,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
     public interface IPostRepository
     {
         Task<Post> GetPostById(string postId);
+        Task<Post> GetPostWithRawDataById(string postId);
         Task<List<Post>> GetPostsByIdsBulk(List<string> postIds);
         Task<Post> UpdatePost(Post post);
         Task<List<Post>> UpdatePosts(List<Post> post);

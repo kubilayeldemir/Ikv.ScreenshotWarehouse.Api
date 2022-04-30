@@ -17,5 +17,6 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Models.RequestModels
         public string SortField { get; set; }
         public string SortDirection { get; set; }
         public bool IncludeRawData { get; set; }
+        public bool IncludeRawDataIfNeeded { get; set; }
     }
 }

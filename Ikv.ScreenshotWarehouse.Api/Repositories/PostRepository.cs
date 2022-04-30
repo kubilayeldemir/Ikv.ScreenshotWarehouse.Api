@@ -27,6 +27,14 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
             return await _ikvContext.Posts.Where(x => x.Id == postId).Include(x => x.User).FirstOrDefaultAsync();
         }
 
+        public async Task<Post> GetPostWithRawDataById(string postId)
+        {
+            return await _ikvContext.Posts.Where(x => x.Id == postId)
+                .Include(x => x.User)
+                .Include(x => x.PostRawData)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<List<Post>> GetPostsByIdsBulk(List<string> postIds)
         {
             return await _ikvContext.Posts.Where(p => postIds.Contains(p.Id)).ToListAsync();
@@ -69,7 +77,23 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
         {
             var query = PostSearchQuery(model);
             query = PostSortQuery(model, query);
-            return await query.GetPagedResultAsync(pagingModel.CurrentPage, pagingModel.PageSize);
+            var posts = await query.GetPagedResultAsync(pagingModel.CurrentPage, pagingModel.PageSize);
+
+            if (model.IncludeRawDataIfNeeded)
+            {
+                var loadRawDataTasks = new List<Task>(); 
+                foreach (var post in posts.Data)
+                {
+                    if (post.FileURL == null)
+                    {
+                        loadRawDataTasks.Add(_ikvContext.Entry(post).Reference(x => x.PostRawData).LoadAsync()); 
+                    }
+                }
+            
+                await Task.WhenAll(loadRawDataTasks);
+            }
+            
+            return posts;
         }
         
         public async Task<List<string>> CheckPostExistsByMd5(List<string> md5List)
@@ -81,6 +105,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
         private IQueryable<Post> PostSearchQuery(PostSearchRequestModel model)
         {
             var query = _ikvContext.Posts.AsQueryable();
+            
             if (model.OnlyNonValidatedPosts)
             {
                 query = _ikvContext.Posts.Where(p => p.IsValidated == false);
