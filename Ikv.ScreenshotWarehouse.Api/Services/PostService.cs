@@ -214,7 +214,6 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             var duplicatePostsOnRequest = new List<Post>();
             var nonValidPosts = new List<Post>();
             var existingPostsOnDb = new List<Post>();
-            var fileTypeNotValidPosts = new List<Post>();
             var fileSizeNotValidPosts = new List<Post>();
             var postsToSave = new List<Post>();
 
@@ -227,6 +226,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                     Title = model.Title,
                     GameServer = GameServers.Diger,
                     UserId = userId,
+                    IsValidated = true,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
                     Username = model.Username,
@@ -244,12 +244,6 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 if (model.FileBase64.IsNullOrEmpty())
                 {
                     nonValidPosts.Add(post);
-                    continue;
-                }
-
-                if (!IsBase64FileTypeValid(model.FileBase64))
-                {
-                    fileTypeNotValidPosts.Add(post);
                     continue;
                 }
 
@@ -316,12 +310,6 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             {
                 responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4005,
                     "Dosyanın boyutu belirlenen maksimum boyuttan büyük olduğu için yüklenmedi."));
-            });
-            
-            fileTypeNotValidPosts.ForEach(p =>
-            {
-                responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4006,
-                    "Yüklediğiniz dosyanın tipi uygun olmadığı için yüklenmedi.(Sisteme JPG JPEG PNG dosyalar yüklenebilir"));
             });
 
             return responseModel;

@@ -35,7 +35,7 @@ namespace Ikv.ScreenshotWarehouse.Api
             services.AddRouting(opt => opt.LowercaseUrls = true);
             services.AddControllers();
             services.AddCors();
-            
+
             services.AddDbContext<IkvContext>(options => options.UseNpgsql(DbConnString));
 
             services.AddScoped<IUserRepository, UserRepository>();
@@ -43,7 +43,7 @@ namespace Ikv.ScreenshotWarehouse.Api
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IPostService, PostService>();
             services.AddSingleton<CloudinaryHelper>();
-            
+
             services.AddMvc()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
 
@@ -105,13 +105,11 @@ namespace Ikv.ScreenshotWarehouse.Api
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ikv.ScreenshotWarehouse.Api v1"));
             }
 
-            app.UseHttpsRedirection();
-
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
-            
+
             app.UseCors(builder =>
             {
                 builder
