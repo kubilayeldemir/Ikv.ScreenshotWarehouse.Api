@@ -15,6 +15,7 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Models.ResponseModels
         public string GameMap { get; set; }
         public string GameServer { get; set; }
         public bool IsValidated { get; set; }
+        public PostRawDataResponseModel RawData { get; set; }
 
         public PostResponseModel(Post post)
         {
@@ -28,6 +29,16 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Models.ResponseModels
             GameMap = post.GameMap;
             IsValidated = post.IsValidated;
             GameServer = post.GameServer;
+            if (post.PostRawData != null)
+            {
+                RawData = new PostRawDataResponseModel
+                {
+                    Id = post.PostRawData.Id,
+                    FileBase64 = post.PostRawData.FileBase64,
+                    FileMd5 = post.PostRawData.FileMd5,
+                    PostId = post.PostRawData.PostId
+                };
+            }
         }
     }
 }

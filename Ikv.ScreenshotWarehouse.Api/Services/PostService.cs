@@ -57,8 +57,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             return await _postRepository.SavePost(post);
         }
 
-        public async Task<List<PostBulkSaveResponseModel>> BulkSaveScreenshots(
-            List<PostBulkSaveRequestModel> postModels, long userId)
+        public async Task<List<PostBulkSaveResponseModel>> BulkSaveScreenshots(List<PostBulkSaveRequestModel> postModels, long userId)
         {
             var username = await _userRepository.GetUsernameOfUserFromUserId(userId);
             var existingPostsMd5List = await _postRepository.CheckPostExistsByMd5(postModels
@@ -203,6 +202,114 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
             {
                 responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4006,
                     "Yüklediğiniz dosyanın tipi uygun olmadığı için yüklenmedi.(Sisteme JPG JPEG PNG dosyalar yüklenebilir"));
+            });
+
+            return responseModel;
+        }
+        
+        public async Task<List<PostBulkSaveResponseModel>> BulkSaveRawImages(List<RawPostBulkSaveRequestModel> postModels, long userId)
+        {
+            var existingPostsMd5List = await _postRepository.CheckPostExistsByMd5(postModels
+                .Select(p => Md5Helper.CreateMd5Checksum(p.FileBase64)).ToList());
+            var duplicatePostsOnRequest = new List<Post>();
+            var nonValidPosts = new List<Post>();
+            var existingPostsOnDb = new List<Post>();
+            var fileSizeNotValidPosts = new List<Post>();
+            var postsToSave = new List<Post>();
+
+            foreach (var model in postModels)
+            {
+                var post = new Post
+                {
+                    Id = ShortGuid.NewGuid(),
+                    Category = "forum",
+                    Title = model.Title,
+                    GameServer = GameServers.Diger,
+                    UserId = userId,
+                    IsValidated = true,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                    Username = model.Username,
+                    ScreenshotDate = model.Timestamp,
+                    Md5 = Md5Helper.CreateMd5Checksum(model.FileBase64)
+                };
+                post.PostRawData = new PostRawData
+                {
+                    PostId = post.Id,
+                    FileBase64 = model.FileBase64,
+                    FileMd5 = post.Md5,
+                    CreatedAt = post.CreatedAt,
+                    UpdatedAt = post.UpdatedAt
+                };
+                if (model.FileBase64.IsNullOrEmpty())
+                {
+                    nonValidPosts.Add(post);
+                    continue;
+                }
+
+                var byteSizeOfFile = System.Text.Encoding.ASCII.GetByteCount(model.FileBase64);
+                if (byteSizeOfFile > 5000*1000)
+                {
+                    fileSizeNotValidPosts.Add(post);
+                    continue;
+                }
+
+                var duplicateImageCount = postsToSave.Count(p => p.Md5 == post.Md5);
+
+                if (duplicateImageCount > 0)
+                {
+                    duplicatePostsOnRequest.Add(post);
+                    continue;
+                }
+
+                if (existingPostsMd5List.Contains(post.Md5))
+                {
+                    existingPostsOnDb.Add(post);
+                    continue;
+                }
+
+                postsToSave.Add(post);
+            }
+
+
+            var savedPosts = await _postRepository.SavePostBulk(postsToSave);
+
+            var responseModel = new List<PostBulkSaveResponseModel>();
+
+            savedPosts.ForEach(p =>
+            {
+                responseModel.Add(new PostBulkSaveResponseModel
+                {
+                    Id = p.Id,
+                    IsOk = true,
+                    Error = null,
+                    ErrorCode = 0,
+                    FileUrl = p.FileURL
+                });
+            });
+
+            duplicatePostsOnRequest.ForEach(p =>
+            {
+                responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4002,
+                    "Bu dosya tekrarlandığı için yüklenmedi."));
+            });
+
+            nonValidPosts.ForEach(p =>
+            {
+                responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4003,
+                    "Dosya bulunamadı."));
+            });
+            
+            existingPostsOnDb.ForEach(p =>
+            {
+                responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4004,
+                    "Bu dosyanın aynısı sistemde zaten bulunduğu için yüklenmedi."));
+            });
+            
+            fileSizeNotValidPosts.ForEach(p =>
+            {
+                responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4005,
+                    "Dosyanın boyutu belirlenen maksimum boyuttan büyük olduğu için yüklenmedi."));
             });
 
             return responseModel;
