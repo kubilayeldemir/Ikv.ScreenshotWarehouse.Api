@@ -2,7 +2,7 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
 WORKDIR /app
-EXPOSE 80
+EXPOSE 5000
 
 ARG CloudinaryApiKey
 ARG CloudinaryApiSecret
@@ -15,6 +15,8 @@ ENV CloudinaryApiSecret=$CloudinaryApiSecret
 ENV CloudinaryCloudName=$CloudinaryCloudName
 ENV IKV_JWT_SECRET=$IKV_JWT_SECRET
 ENV IKVDBCONNSTRING=$IKVDBCONNSTRING
+
+ENV ASPNETCORE_URLS=http://+:5000
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
