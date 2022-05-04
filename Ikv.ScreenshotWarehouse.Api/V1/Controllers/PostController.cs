@@ -83,8 +83,8 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
             return Ok(postResponseModel);
         }
 
-        [Authorize(Roles = "admin")]
         [HttpPost("bulk-save-raw")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> BulkSaveRawImages([FromBody] List<RawPostBulkSaveRequestModel> models)
         {
             // var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();

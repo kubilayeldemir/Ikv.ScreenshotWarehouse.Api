@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CSharpVitamins;
@@ -152,7 +153,13 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 }
             }
 
-            var savedPosts = await _postRepository.SavePostBulk(uploadedPosts);
+            var savedPosts = new List<Post>();
+
+            if (uploadedPosts.Any())
+            {
+                savedPosts = await _postRepository.SavePostBulk(uploadedPosts);
+
+            }
 
             var responseModel = new List<PostBulkSaveResponseModel>();
 
@@ -168,6 +175,8 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 });
             });
 
+            #region errorMapping
+         
             uploadFailedPosts.ForEach(p =>
             {
                 responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4001,
@@ -203,6 +212,8 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4006,
                     "Yüklediğiniz dosyanın tipi uygun olmadığı için yüklenmedi.(Sisteme JPG JPEG PNG dosyalar yüklenebilir"));
             });
+            
+            #endregion
 
             return responseModel;
         }
@@ -233,14 +244,14 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                     ScreenshotDate = model.Timestamp,
                     Md5 = Md5Helper.CreateMd5Checksum(model.FileBase64)
                 };
-                post.PostRawData = new PostRawData
-                {
-                    PostId = post.Id,
-                    FileBase64 = model.FileBase64,
-                    FileMd5 = post.Md5,
-                    CreatedAt = post.CreatedAt,
-                    UpdatedAt = post.UpdatedAt
-                };
+                // post.PostRawData = new PostRawData
+                // {
+                //     PostId = post.Id,
+                //     FileBase64 = model.FileBase64,
+                //     FileMd5 = post.Md5,
+                //     CreatedAt = post.CreatedAt,
+                //     UpdatedAt = post.UpdatedAt
+                // };
                 if (model.FileBase64.IsNullOrEmpty())
                 {
                     nonValidPosts.Add(post);
@@ -268,11 +279,27 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                     continue;
                 }
 
+                try
+                {
+                    string filePath = $"./images/{post.Id}.{model.FileType}";
+                    File.WriteAllBytes(filePath, Convert.FromBase64String(model.FileBase64.Split(',')[1]));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    continue;
+                }
+
                 postsToSave.Add(post);
             }
 
+            var savedPosts = new List<Post>();
 
-            var savedPosts = await _postRepository.SavePostBulk(postsToSave);
+            if (postsToSave.Any())
+            {
+                savedPosts = await _postRepository.SavePostBulk(postsToSave);
+            }
+            
 
             var responseModel = new List<PostBulkSaveResponseModel>();
 
@@ -287,7 +314,9 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                     FileUrl = p.FileURL
                 });
             });
-
+            
+            #region errorMapping
+            
             duplicatePostsOnRequest.ForEach(p =>
             {
                 responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4002,
@@ -311,6 +340,8 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 responseModel.Add(PostBulkSaveResponseModel.CreateFailedPostResponseModel(4005,
                     "Dosyanın boyutu belirlenen maksimum boyuttan büyük olduğu için yüklenmedi."));
             });
+            
+            #endregion
 
             return responseModel;
         }
