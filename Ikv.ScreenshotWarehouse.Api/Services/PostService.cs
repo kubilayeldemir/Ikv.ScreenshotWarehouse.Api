@@ -281,8 +281,8 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
 
                 try
                 {
-                    string filePath = $"./images/{post.Id}.{model.FileType}";
-                    File.WriteAllBytes(filePath, Convert.FromBase64String(model.FileBase64.Split(',')[1]));
+                    var filename = $"{post.Id}.{model.FileType}";
+                    FileSaveHelper.SaveFile(filename, model.FileBase64.Split(',')[1]);
                 }
                 catch (Exception e)
                 {
