@@ -14,3 +14,5 @@ services:
       IKVDBCONNSTRING: ${IKVDBCONNSTRING}
     ports:
       - "80:80"
+    volumes:
+      - /ikv-nginx/files:/app/files/
