@@ -24,7 +24,12 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Models.ResponseModels
             UserId = post.UserId;
             Category = post.Category;
             Title = post.Title;
-            FileUrl = post.FileURL;
+            FileUrl = post.Category switch
+            {
+                "user" => "https://res.cloudinary.com/dmo4hvhcj/image/upload/v1645641514/" + post.FileURL,
+                "forum" => "https://ikvssapi.tk/" + post.FileURL,
+                _ => "https://res.cloudinary.com/dmo4hvhcj/image/upload/v1645876761/web/lazy_dy4ssu.jpg"
+            };
             ScreenshotDate = post.ScreenshotDate;
             GameMap = post.GameMap;
             IsValidated = post.IsValidated;
