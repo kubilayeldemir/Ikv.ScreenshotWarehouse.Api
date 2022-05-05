@@ -283,6 +283,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 {
                     var filename = $"{post.Id}.{model.FileType}";
                     FileSaveHelper.SaveFile(filename, model.FileBase64.Split(',')[1]);
+                    post.FileURL = filename;
                 }
                 catch (Exception e)
                 {
