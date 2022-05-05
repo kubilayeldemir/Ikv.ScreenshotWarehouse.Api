@@ -8,6 +8,9 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Post> builder)
         {
+            builder.Property(p => p.Id)
+                .HasMaxLength(64);
+            
             builder.Property(p => p.Category)
                 .HasMaxLength(64);
 

@@ -22,7 +22,8 @@ namespace Ikv.ScreenshotWarehouse.Api.Migrations
             modelBuilder.Entity("Ikv.ScreenshotWarehouse.Api.Persistence.Entities.Post", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<string>("Category")
                         .HasMaxLength(64)
@@ -100,7 +101,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PostId")
-                        .HasColumnType("text");
+                        .HasColumnType("character varying(64)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
