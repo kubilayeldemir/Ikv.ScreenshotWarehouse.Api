@@ -146,6 +146,15 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
                 {
                     post.FileURL = url;
                     uploadedPosts.Add(post);
+                    try
+                    {
+                        var filename = $"{post.Id}.png";
+                        FileSaveHelper.SaveFile(filename, post.PostRawData.FileBase64.Split(',')[1]);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("File save failed | " + e);
+                    }
                 }
                 else
                 {
