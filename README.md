@@ -1,6 +1,13 @@
 # Ikv.ScreenshotWarehouse.Api
+---WIP---
+İstanbul Kıyamet Vakti(IKV) is first Turkish MMORPG game, still played to this date since 2007
+This project is made for preserving screenshots uploaded by players to the official ikv forum. Ikv forum doesn't have an image hosting service, because of this players use popular free image hosting services which known for deleting/losing images. Every passing day more images gets deleted, most of the images before 2012 are already deleted or lost. To prevent losing images/screenshots anymore i downloaded every image on ikv forum and served them with an api and a simple website.
+This project is made for mainly learning purposes.
 
-Backend for a fan made screenshot warehouse of a legendary turkish mmorpg game
+This project has 3 parts: 
+1. IkvForumImageScraper: Scrapes images from IKV forum with python, saves them to filesystem also has a script to post saved images to API.
+2. Ikv.ScreenshotWarehouse.Api: An API for 
+---WIP---
 
 # HOW TO RUN
 
