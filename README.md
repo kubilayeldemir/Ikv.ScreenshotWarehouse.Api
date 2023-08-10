@@ -1,6 +1,15 @@
 # Ikv.ScreenshotWarehouse.Api
 
-Backend for a fan made screenshot warehouse of a legendary turkish mmorpg game
+İstanbul Kıyamet Vakti(IKV) is first Turkish MMORPG game, still played to this date since 2007
+This project is made for preserving screenshots uploaded by players to the official game forum. Ikv's forum website doesn't have an image hosting service, because of this players use popular free image hosting services which known for deleting/losing images. Every passing day more images gets deleted, most of the images before 2012 are already deleted or lost. To prevent losing images/screenshots anymore i downloaded every image on ikv forum and served them with an api and a simple website.  Users can also sign-up and upload their screenshots.
+This project is made for mainly learning purposes.
+
+Project has 4 parts: 
+1. [IkvForumImageScraper](https://github.com/kubilayeldemir/IkvForumImageScraper): Scrapes images from IKV forum with python beautifulsoup library, saves images to filesystem.There is also a simple script to read images from the filesystem, check if the image is corrupted, and send healthy images to Ikv.ScreenshotWarehouse.Api.
+2. Ikv.ScreenshotWarehouse.Api(this project): An API for letting users save images and serves saved images to clients. Images are saved to PostgreSQL and used to be hosted on Cloudinary, after realizing the free quota of Cloudinary is not going to be sufficient, images are saved to the filesystem to be served by nginx. Deployed to Oracle Cloud VM via docker.
+3. [ikv-nginx](https://github.com/kubilayeldemir/ikv-nginx): Acts as a reverse proxy, works on port 80 which is open to public, redirects urls with /api to Ikv.ScreenshotWarehouse.Api, else serves images from the filesystem which contains images saved by API, a simple image host service. Deployed to Oracle Cloud VM via docker. I used Cloudflare to manage the domain and enable SSL(flexible ssl).
+4. [Ikv.ScreenshotWarehouse.UI](https://github.com/kubilayeldemir/Ikv.ScreenshotWarehouse.UI): A simple UI made with nuxt.js, consumes the api and serves images to users. Server-side rendering was used. Deployed to Vercell.
+
 
 # HOW TO RUN
 
