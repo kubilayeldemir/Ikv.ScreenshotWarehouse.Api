@@ -373,6 +373,20 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
         {
             return await _postRepository.SearchPostsPaged(model, pagingModel);
         }
+        
+        public async Task<PagedResult<Post>> GetRandomPosts()
+        {
+            var posts = await _postRepository.GetRandomPosts();
+            return new PagedResult<Post>
+            {
+                Data = posts,
+                PageSize = posts.Count,
+                PageCount = 1,
+                RowCount = 0,
+                CurrentPage = 1
+            };
+        }
+
 
         private bool IsBase64FileTypeValid(string base64String)
         {

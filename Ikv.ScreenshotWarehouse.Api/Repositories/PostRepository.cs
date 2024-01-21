@@ -65,6 +65,31 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
             return await query.ToListAsync();
         }
 
+        public async Task<List<Post>> GetRandomPosts()
+        {
+            var totalCount = _ikvContext.Posts.Count(p => p.IsValidated);
+
+            var random = new Random();
+            var offset = random.Next(Math.Max(0, totalCount - 10));
+            var orderByRandomIndex = random.Next(4);
+
+            IQueryable<Post> query = orderByRandomIndex switch
+            {
+                0 => _ikvContext.Posts.OrderBy(p => p.Id),
+                1 => _ikvContext.Posts.OrderBy(p => p.Md5),
+                2 => _ikvContext.Posts.OrderBy(p => p.ScreenshotDate),
+                3 => _ikvContext.Posts.OrderBy(p => p.CreatedAt),
+                _ => _ikvContext.Posts.OrderBy(p => p.Id)
+            };
+
+            return await query
+                .Where(p => p.IsValidated)
+                .Skip(offset)
+                .Take(10)
+                .ToListAsync();
+        }
+
+
         public async Task<PagedResult<Post>> SearchPostsPaged(PostSearchRequestModel model, PagingRequestModel pagingModel)
         {
             var query = PostSearchQuery(model);
