@@ -56,6 +56,7 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
             return Ok(pagedResponseModel);
         }
         
+        [NoCache]
         [HttpGet("random")]
         public async Task<IActionResult> GetPostsRandom()
         {
