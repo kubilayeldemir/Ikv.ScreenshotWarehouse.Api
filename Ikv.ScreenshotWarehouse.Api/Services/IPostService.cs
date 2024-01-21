@@ -15,5 +15,6 @@ namespace Ikv.ScreenshotWarehouse.Api.Services
         Task<List<Post>> ValidatePosts(List<string> postIds);
         Task<List<Post>> SearchPosts(PostSearchRequestModel model);
         Task<PagedResult<Post>> SearchPostsPaged(PostSearchRequestModel model, PagingRequestModel pagingModel);
+        Task<PagedResult<Post>> GetRandomPosts();
     }
 }

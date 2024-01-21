@@ -55,6 +55,23 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
             pagedResponseModel.Data = postsPaged.Data.ConvertAll(p => new PostResponseModel(p));
             return Ok(pagedResponseModel);
         }
+        
+        [HttpGet("random")]
+        public async Task<IActionResult> GetPostsRandom()
+        {
+            var postsPaged = await _postService.GetRandomPosts();
+
+            var pagedResponseModel = new PagedResult<PostResponseModel>
+            {
+                CurrentPage = postsPaged.CurrentPage,
+                PageCount = postsPaged.PageCount,
+                PageSize = postsPaged.PageSize,
+                Data = postsPaged.Data.ConvertAll(p => new PostResponseModel(p))
+            };
+
+            return Ok(pagedResponseModel);
+        }
+
 
         [HttpPost]
         [Authorize(Roles = "admin")]
