@@ -72,8 +72,13 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
 
             return Ok(pagedResponseModel);
         }
-
-
+        
+        [HttpGet("top-threads")]
+        public async Task<IActionResult> GetTopThreads()
+        {
+            return Ok(StaticJson.ThreadsWithMostPosts);
+        }
+        
         [HttpPost]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> SavePost([FromBody] PostSaveRequestModel model)
