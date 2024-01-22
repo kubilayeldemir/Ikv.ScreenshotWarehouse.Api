@@ -16,6 +16,9 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistence.Configurations
 
             builder.Property(p => p.Title)
                 .HasMaxLength(128);
+            
+            builder.Property(p => p.TitleMd5)
+                .HasMaxLength(64);
 
             builder.Property(p => p.GameMap)
                 .HasMaxLength(64);

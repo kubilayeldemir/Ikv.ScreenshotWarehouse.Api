@@ -9,6 +9,7 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistence.Entities
         public string Id { get; set; }
         public string Category { get; set; }
         public string Title { get; set; }
+        public string TitleMd5 { get; set; }
         public string FileURL { get; set; }
         public string Md5 { get; set; }
         public DateTime ScreenshotDate { get; set; }
