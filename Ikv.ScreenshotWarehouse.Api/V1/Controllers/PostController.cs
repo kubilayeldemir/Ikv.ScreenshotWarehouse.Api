@@ -26,6 +26,10 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
         public async Task<IActionResult> GetPostById([FromRoute] string postId)
         {
             var post = await _postService.GetPostById(postId);
+            if (post == null)
+            {
+                return Ok();
+            }
             var postResponseModel = new PostResponseModel(post);
             return Ok(postResponseModel);
         }
@@ -72,8 +76,13 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Controllers
 
             return Ok(pagedResponseModel);
         }
-
-
+        
+        [HttpGet("top-threads")]
+        public async Task<IActionResult> GetTopThreads()
+        {
+            return Ok(StaticJson.ThreadsWithMostPosts);
+        }
+        
         [HttpPost]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> SavePost([FromBody] PostSaveRequestModel model)

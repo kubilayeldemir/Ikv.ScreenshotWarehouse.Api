@@ -3,15 +3,17 @@ using System;
 using Ikv.ScreenshotWarehouse.Api.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Ikv.ScreenshotWarehouse.Api.Migrations
 {
     [DbContext(typeof(IkvContext))]
-    partial class IkvContextModelSnapshot : ModelSnapshot
+    [Migration("20240123200046_NewIndexesAdded")]
+    partial class NewIndexesAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
