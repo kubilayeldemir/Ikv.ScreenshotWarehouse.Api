@@ -150,6 +150,11 @@ namespace Ikv.ScreenshotWarehouse.Api.Repositories
             {
                 query = query.Where(p => p.GameServer == model.GameServer);
             }
+            
+            if (!model.TitleMd5.IsNullOrEmpty())
+            {
+                query = query.Where(p => p.TitleMd5 == model.TitleMd5);
+            }
 
             if (model.StarDate != DateTime.MinValue)
             {

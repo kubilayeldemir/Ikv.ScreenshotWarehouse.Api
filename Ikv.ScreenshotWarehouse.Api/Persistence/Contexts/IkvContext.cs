@@ -1,4 +1,5 @@
-﻿using Ikv.ScreenshotWarehouse.Api.Persistence.Entities;
+﻿using System;
+using Ikv.ScreenshotWarehouse.Api.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ikv.ScreenshotWarehouse.Api.Persistence.Contexts
@@ -29,9 +30,11 @@ namespace Ikv.ScreenshotWarehouse.Api.Persistence.Contexts
             modelBuilder.Entity<User>(entity => { entity.HasIndex(u => u.Email).IsUnique(); });
             modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => p.ScreenshotDate); });
             modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => p.CreatedAt); });
-            modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => p.IsValidated); });
             modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => p.Md5).IsUnique(); });
-            modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => p.TitleMd5); });
+            modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => new {p.Username, p.ScreenshotDate}); });
+            modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => new {p.TitleMd5, p.ScreenshotDate}); });
+            modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => new {p.Category, p.ScreenshotDate}); });
+            modelBuilder.Entity<Post>(entity => { entity.HasIndex(p => new {p.Category, p.CreatedAt}); });
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(IkvContext).Assembly);
         }
         // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

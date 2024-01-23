@@ -14,6 +14,7 @@ namespace Ikv.ScreenshotWarehouse.Api.V1.Models.RequestModels
         public string GameServer { get; set; }
         public bool IgnoreValidation { get; set; }
         public bool OnlyNonValidatedPosts { get; set; }
+        public string TitleMd5 { get; set; }
         public string SortField { get; set; }
         public string SortDirection { get; set; }
         public bool IncludeRawData { get; set; }
